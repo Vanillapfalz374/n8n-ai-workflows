@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automate Code Reviews with n8n + Ollama (AI Pull Request Reviewer)</title>
+    <meta name="description" content="Build an automated AI code review pipeline with n8n and Ollama. Review pull requests locally with zero API costs. Free workflow template included. GDPR compliant.">
+    <meta property="og:title" content="AI Code Review with n8n + Ollama — Free Workflow Template">
+    <meta property="og:description" content="Automate pull request reviews with local AI. Free n8n workflow that runs 100% on your hardware. No API keys needed.">
+    <meta property="og:type" content="article">
+    <link rel="canonical" href="https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-code-review-ollama.html">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Automate Code Reviews with n8n + Ollama (AI Pull Request Reviewer)",
+        "description": "Build an automated AI code review pipeline with n8n and Ollama. Free workflow template included.",
+        "author": {"@type": "Organization", "name": "Workflow Forge"},
+        "datePublished": "2026-03-24",
+        "publisher": {"@type": "Organization", "name": "Workflow Forge"}
+    }
+    </script>
+    <style>
+        :root { --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff; --green: #3fb950; --orange: #d29922; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+        .container { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem; }
+        nav { padding: 1rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+        nav a { color: var(--accent); text-decoration: none; }
+        h1 { font-size: 2.2rem; margin-bottom: 1rem; line-height: 1.3; }
+        h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; color: var(--accent); }
+        h3 { font-size: 1.2rem; margin: 1.5rem 0 0.75rem; }
+        p { margin-bottom: 1rem; }
+        .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+        pre { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin: 1rem 0 1.5rem; overflow-x: auto; font-size: 0.88rem; line-height: 1.5; }
+        code { font-family: 'SF Mono', 'Fira Code', monospace; }
+        p code, li code { background: var(--surface); border: 1px solid var(--border); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.88em; }
+        ul, ol { margin: 0 0 1rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .cta { background: linear-gradient(135deg, #1a3a5c, #1a2d4a); border: 1px solid var(--accent); border-radius: 12px; padding: 2rem; margin: 2rem 0; text-align: center; }
+        .cta h3 { color: var(--accent); margin-top: 0; }
+        .cta a.btn { display: inline-block; background: var(--accent); color: #000; padding: 0.75rem 2rem; border-radius: 8px; font-weight: bold; text-decoration: none; margin-top: 1rem; }
+        .cta a.btn:hover { opacity: 0.9; text-decoration: none; }
+        .highlight { background: var(--surface); border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; }
+        th, td { border: 1px solid var(--border); padding: 0.75rem; text-align: left; }
+        th { background: var(--surface); }
+        .step { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+        .step-number { color: var(--accent); font-size: 0.9rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .json-toggle { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin: 1.5rem 0; }
+        .json-toggle summary { cursor: pointer; padding: 1rem 1.25rem; font-weight: 600; color: var(--accent); }
+        .json-toggle summary:hover { background: rgba(88,166,255,0.05); }
+        .json-toggle pre { margin: 0; border: none; border-top: 1px solid var(--border); border-radius: 0 0 8px 8px; max-height: 500px; overflow-y: auto; }
+        footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+        @media (max-width: 600px) { h1 { font-size: 1.6rem; } .cta { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav><a href="https://bonskari.github.io/n8n-ai-workflows/">&larr; n8n AI Workflow Templates</a> &middot; <a href="https://bonskari.github.io/n8n-ai-workflows/blog/">Blog</a></nav>
+
+    <article>
+        <h1>Automate Code Reviews with n8n + Ollama (AI Pull Request Reviewer)</h1>
+        <p class="meta">Published March 24, 2026 &middot; 12 min read</p>
+
+        <p>Code reviews are essential but time-consuming. Senior developers spend 4&ndash;8 hours per week reviewing pull requests, and backlogs pile up fast. Cloud AI code review tools like CodeRabbit or Sourcery charge $15&ndash;30/developer/month and require sending your proprietary code to external servers.</p>
+
+        <p>With n8n and Ollama, you can build an AI code reviewer that runs entirely on your own machine &mdash; zero API costs, your code never leaves your infrastructure, and it works on any Git repository.</p>
+
+        <p>In this tutorial, you'll build a webhook-triggered workflow that:</p>
+        <ol>
+            <li>Receives a GitHub webhook when a pull request is opened or updated</li>
+            <li>Fetches the diff from the GitHub API</li>
+            <li>Sends the diff to Ollama for multi-dimensional analysis</li>
+            <li>Posts the AI review as a comment on the pull request</li>
+            <li>Flags critical issues with severity levels</li>
+        </ol>
+
+        <h2>Why Automate Code Reviews with Local AI?</h2>
+
+        <p>Manual code reviews have three problems that AI can address:</p>
+
+        <table>
+            <tr><th>Problem</th><th>Impact</th><th>How AI Helps</th></tr>
+            <tr><td>Review bottlenecks</td><td>PRs wait 1&ndash;3 days for review</td><td>Instant first-pass review within seconds</td></tr>
+            <tr><td>Inconsistent standards</td><td>Different reviewers catch different things</td><td>Consistent checklist applied every time</td></tr>
+            <tr><td>Missed security issues</td><td>Vulnerabilities slip through tired eyes</td><td>AI checks for OWASP Top 10, SQL injection, XSS</td></tr>
+            <tr><td>Style debates</td><td>Bikeshedding wastes meeting time</td><td>AI enforces team conventions automatically</td></tr>
+        </table>
+
+        <div class="highlight">
+            <p><strong>Why local AI works for code review:</strong> Code review is a structured analysis task &mdash; check for patterns, compare against rules, identify anomalies. An 8B&ndash;14B parameter model like Llama 3 or CodeLlama handles this well. You don't need GPT-4 to spot a missing null check or an unhandled error.</p>
+        </div>
+
+        <h2>The Architecture</h2>
+
+        <p>The workflow uses a GitHub webhook to trigger reviews automatically:</p>
+
+        <pre><code>GitHub PR Event
+    &darr;
+[Webhook Trigger] &rarr; [Fetch PR Diff] &rarr; [Chunk Diff] &rarr; [Ollama Review]
+                                                                      &darr;
+                                                              [Format Review]
+                                                                      &darr;
+                                                           [Post PR Comment]</code></pre>
+
+        <h2>Step 1: Set Up the Webhook Trigger</h2>
+
+        <p>The workflow starts when GitHub sends a webhook event for pull request activity.</p>
+
+        <p>In n8n, add a <strong>Webhook</strong> node:</p>
+        <ul>
+            <li>HTTP Method: <code>POST</code></li>
+            <li>Path: <code>/github/pr-review</code></li>
+        </ul>
+
+        <p>Then configure your GitHub repository:</p>
+        <ol>
+            <li>Go to Settings &rarr; Webhooks &rarr; Add webhook</li>
+            <li>Payload URL: <code>https://your-n8n-domain.com/webhook/github/pr-review</code></li>
+            <li>Content type: <code>application/json</code></li>
+            <li>Events: Select "Pull requests" only</li>
+        </ol>
+
+        <h2>Step 2: Fetch the Pull Request Diff</h2>
+
+        <p>Use an HTTP Request node to get the diff from GitHub's API:</p>
+
+        <pre><code>// HTTP Request Node Configuration
+URL: https://api.github.com/repos/{{ $json.body.repository.full_name }}/pulls/{{ $json.body.number }}
+Method: GET
+Headers:
+  Accept: application/vnd.github.v3.diff
+  Authorization: Bearer YOUR_GITHUB_TOKEN</code></pre>
+
+        <p>This returns the raw diff of all changed files. The <code>Accept: application/vnd.github.v3.diff</code> header tells GitHub to return the unified diff format instead of JSON.</p>
+
+        <h2>Step 3: Chunk Large Diffs</h2>
+
+        <p>Large PRs can exceed Ollama's context window. Split the diff into per-file chunks:</p>
+
+        <pre><code>// Function Node: Split Diff by File
+const diff = $input.first().json.data;
+const files = diff.split(/^diff --git /m).filter(f => f.trim());
+
+return files.map(file => {
+  const lines = file.split('\n');
+  const filename = lines[0].match(/a\/(.+?) b\//)?.[1] || 'unknown';
+  return {
+    json: {
+      filename,
+      diff: 'diff --git ' + file,
+      pr_number: $('Webhook').item.json.body.number,
+      repo: $('Webhook').item.json.body.repository.full_name
+    }
+  };
+});</code></pre>
+
+        <h2>Step 4: AI Review with Ollama</h2>
+
+        <p>This is the core of the workflow. Send each file's diff to Ollama with a structured review prompt:</p>
+
+        <pre><code>// HTTP Request to Ollama
+URL: http://localhost:11434/api/generate
+Method: POST
+Body (JSON):
+{
+  "model": "llama3:8b",
+  "prompt": "You are an expert code reviewer. Review this git diff and provide feedback.\n\nAnalyze for:\n1. **Bugs**: Logic errors, off-by-one, null pointer risks, race conditions\n2. **Security**: SQL injection, XSS, command injection, hardcoded secrets\n3. **Performance**: N+1 queries, unnecessary allocations, missing indexes\n4. **Readability**: Unclear naming, missing error handling, complex logic\n5. **Best Practices**: Framework conventions, design patterns, test coverage\n\nFor each issue found, respond in this format:\n- [SEVERITY: critical/warning/info] FILE:LINE - Description of issue and suggested fix\n\nIf the code looks good, say so briefly.\n\nDiff:\n```\n${diff}\n```",
+  "stream": false,
+  "options": {
+    "temperature": 0.2,
+    "num_predict": 2000
+  }
+}</code></pre>
+
+        <div class="highlight">
+            <p><strong>Prompt engineering tip:</strong> Use <code>temperature: 0.2</code> for code review. You want consistent, analytical output &mdash; not creative responses. The structured format (<code>[SEVERITY: level] FILE:LINE</code>) makes it easy to parse results programmatically if needed.</p>
+        </div>
+
+        <h2>Step 5: Format and Post the Review</h2>
+
+        <p>Aggregate all file reviews and post as a single PR comment:</p>
+
+        <pre><code>// Function Node: Format Review Comment
+const reviews = $input.all();
+let comment = '## AI Code Review\n\n';
+comment += '> Automated review by local AI (Ollama). ';
+comment += 'This is a first-pass review — human review is still recommended.\n\n';
+
+let criticalCount = 0;
+let warningCount = 0;
+
+for (const review of reviews) {
+  const response = JSON.parse(review.json.data).response;
+  comment += `### \`${review.json.filename}\`\n\n`;
+  comment += response + '\n\n---\n\n';
+
+  criticalCount += (response.match(/\[SEVERITY: critical\]/gi) || []).length;
+  warningCount += (response.match(/\[SEVERITY: warning\]/gi) || []).length;
+}
+
+comment += `**Summary:** ${criticalCount} critical, ${warningCount} warnings\n`;
+
+return [{ json: { comment, pr_number: reviews[0].json.pr_number, repo: reviews[0].json.repo } }];</code></pre>
+
+        <p>Then use another HTTP Request node to post the comment:</p>
+
+        <pre><code>// Post Comment to PR
+URL: https://api.github.com/repos/{{ $json.repo }}/issues/{{ $json.pr_number }}/comments
+Method: POST
+Headers:
+  Authorization: Bearer YOUR_GITHUB_TOKEN
+Body:
+{
+  "body": "{{ $json.comment }}"
+}</code></pre>
+
+        <h2>Advanced: Model Selection for Code Review</h2>
+
+        <p>Different models have different strengths for code review:</p>
+
+        <table>
+            <tr><th>Model</th><th>Size</th><th>Best For</th><th>Speed</th></tr>
+            <tr><td>codellama:7b</td><td>3.8 GB</td><td>Code-specific analysis, security checks</td><td>Fast</td></tr>
+            <tr><td>llama3:8b</td><td>4.7 GB</td><td>General review, readability, best practices</td><td>Fast</td></tr>
+            <tr><td>codellama:13b</td><td>7.4 GB</td><td>Complex architecture review</td><td>Medium</td></tr>
+            <tr><td>deepseek-coder:6.7b</td><td>3.8 GB</td><td>Multi-language review, type checking</td><td>Fast</td></tr>
+            <tr><td>qwen2.5-coder:7b</td><td>4.7 GB</td><td>Latest training data, modern framework knowledge</td><td>Fast</td></tr>
+        </table>
+
+        <div class="highlight">
+            <p><strong>Recommendation:</strong> Start with <code>llama3:8b</code> for general reviews. Switch to <code>codellama:7b</code> if you need more code-specific analysis (it's trained specifically on code and understands more languages). For teams with 16GB+ RAM, <code>codellama:13b</code> gives noticeably better architecture-level feedback.</p>
+        </div>
+
+        <h2>Production Considerations</h2>
+
+        <h3>Rate Limiting</h3>
+        <p>If your team opens 20+ PRs/day, Ollama on a single machine can become a bottleneck. Solutions:</p>
+        <ul>
+            <li>Add a queue (n8n's built-in "Execute Workflow" with concurrency limits)</li>
+            <li>Skip review for PRs under 5 lines changed (likely typo fixes)</li>
+            <li>Only trigger on <code>opened</code> and <code>synchronize</code> events, not <code>labeled</code> or <code>assigned</code></li>
+        </ul>
+
+        <h3>Context Window Limits</h3>
+        <p>Most Ollama models have 4096&ndash;8192 token context windows. For PRs with large files:</p>
+        <ul>
+            <li>Truncate diffs to the first 3000 characters per file</li>
+            <li>Focus on added lines (<code>+</code> lines in the diff) rather than removed lines</li>
+            <li>Skip binary files and lock files automatically</li>
+        </ul>
+
+        <h3>Reducing False Positives</h3>
+        <p>AI code reviewers sometimes flag things that aren't actual issues. Reduce noise by:</p>
+        <ul>
+            <li>Adding project-specific context to the prompt ("We use TypeScript strict mode", "All database access goes through the ORM")</li>
+            <li>Excluding test files from security reviews (test fixtures often contain intentionally "bad" data)</li>
+            <li>Using severity levels so developers can focus on <code>critical</code> issues first</li>
+        </ul>
+
+        <h2>Cost Comparison</h2>
+
+        <table>
+            <tr><th></th><th>Cloud AI Review Tools</th><th>This Workflow (Local)</th></tr>
+            <tr><td>Monthly cost (10 devs)</td><td>$150&ndash;300/month</td><td>$0</td></tr>
+            <tr><td>Code privacy</td><td>Sent to cloud servers</td><td>Never leaves your machine</td></tr>
+            <tr><td>Customization</td><td>Limited to tool's options</td><td>Full control over prompts and rules</td></tr>
+            <tr><td>Setup time</td><td>5 minutes</td><td>30 minutes</td></tr>
+            <tr><td>Works offline</td><td>No</td><td>Yes (except GitHub API calls)</td></tr>
+            <tr><td>GDPR/SOC2</td><td>Depends on vendor</td><td>Compliant by default</td></tr>
+        </table>
+
+        <h2>Complete Workflow JSON</h2>
+
+        <p>Import this directly into n8n to get started:</p>
+
+        <details class="json-toggle">
+            <summary>Click to expand full workflow JSON</summary>
+            <pre><code>{
+  "name": "AI Code Review Bot (Ollama + GitHub)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "github/pr-review",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook",
+      "name": "GitHub PR Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true },
+          "combinator": "and",
+          "conditions": [
+            {
+              "leftValue": "={{ $json.body.action }}",
+              "rightValue": "opened",
+              "operator": { "type": "string", "operation": "oneOf", "rightValue": ["opened", "synchronize"] }
+            }
+          ]
+        }
+      },
+      "id": "filter-action",
+      "name": "Filter PR Events",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.github.com/repos/{{ $json.body.repository.full_name }}/pulls/{{ $json.body.number }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Accept", "value": "application/vnd.github.v3.diff" },
+            { "name": "Authorization", "value": "Bearer YOUR_GITHUB_TOKEN" }
+          ]
+        },
+        "options": { "timeout": 30000 }
+      },
+      "id": "fetch-diff",
+      "name": "Fetch PR Diff",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3:8b', prompt: 'You are an expert code reviewer. Review this pull request diff.\\n\\nAnalyze for:\\n1. Bugs: logic errors, null pointer risks, race conditions\\n2. Security: SQL injection, XSS, hardcoded secrets, command injection\\n3. Performance: N+1 queries, unnecessary allocations\\n4. Readability: unclear naming, missing error handling\\n\\nFor each issue: [SEVERITY: critical/warning/info] Description and fix.\\nIf the code looks good, say so briefly.\\n\\nDiff:\\n' + ($json.data || '').substring(0, 6000), stream: false, options: { temperature: 0.2, num_predict: 2000 } }) }}",
+        "options": { "timeout": 120000 }
+      },
+      "id": "review",
+      "name": "AI Review (Ollama)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.github.com/repos/{{ $('GitHub PR Webhook').item.json.body.repository.full_name }}/issues/{{ $('GitHub PR Webhook').item.json.body.number }}/comments",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer YOUR_GITHUB_TOKEN" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ body: '## AI Code Review\\n\\n> Automated review by local AI (Ollama). Human review still recommended.\\n\\n' + JSON.parse($json.data).response }) }}"
+      },
+      "id": "post-comment",
+      "name": "Post Review Comment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "GitHub PR Webhook": {
+      "main": [[{ "node": "Filter PR Events", "type": "main", "index": 0 }]]
+    },
+    "Filter PR Events": {
+      "main": [[{ "node": "Fetch PR Diff", "type": "main", "index": 0 }]]
+    },
+    "Fetch PR Diff": {
+      "main": [[{ "node": "AI Review (Ollama)", "type": "main", "index": 0 }]]
+    },
+    "AI Review (Ollama)": {
+      "main": [[{ "node": "Post Review Comment", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "AI" }, { "name": "Ollama" }, { "name": "DevOps" }, { "name": "Code Review" }]
+}</code></pre>
+        </details>
+
+        <h2>Wrapping Up</h2>
+
+        <p>Automated code review with n8n + Ollama gives your team instant first-pass PR reviews without sending code to external servers. It won't replace human reviewers, but it catches the obvious issues &mdash; security vulnerabilities, missing error handling, style violations &mdash; so your senior devs can focus on architecture and design decisions.</p>
+
+        <p>The workflow above is a starting point. Customize the prompt with your team's coding standards, add file-type filters, or integrate with Slack notifications for critical findings.</p>
+
+        <div class="cta">
+            <h3>Want 11 Production-Ready AI Workflows?</h3>
+            <p>The Self-Hosted AI Workflow Pack includes code review, email automation, lead scoring, document processing, and 7 more n8n + Ollama templates. One payment, unlimited runs, zero API costs.</p>
+            <a href="https://bonskari.github.io/n8n-ai-workflows/" class="btn">Get the Full Pack &mdash; $39</a>
+        </div>
+
+    </article>
+
+    <footer>
+        <p>&copy; 2026 Workflow Forge. All rights reserved.</p>
+    </footer>
+</div>
+</body>
+</html>

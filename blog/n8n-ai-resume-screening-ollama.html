@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automate Resume Screening with n8n + Ollama (AI Recruitment Pipeline)</title>
+    <meta name="description" content="Build an AI-powered resume screening pipeline with n8n and Ollama. Score candidates, extract skills, rank applicants. Free workflow template. No API costs, GDPR compliant.">
+    <meta property="og:title" content="AI Resume Screening with n8n + Ollama — Free Workflow Template">
+    <meta property="og:description" content="Screen resumes automatically with local AI. Score candidates, extract skills, rank applicants. Free n8n workflow included.">
+    <meta property="og:type" content="article">
+    <link rel="canonical" href="https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-resume-screening-ollama.html">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Automate Resume Screening with n8n + Ollama (AI Recruitment Pipeline)",
+        "description": "Build an AI-powered resume screening pipeline with n8n and Ollama. Free workflow template included.",
+        "author": {"@type": "Organization", "name": "Workflow Forge"},
+        "datePublished": "2026-03-24",
+        "publisher": {"@type": "Organization", "name": "Workflow Forge"}
+    }
+    </script>
+    <style>
+        :root { --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff; --green: #3fb950; --orange: #d29922; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+        .container { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem; }
+        nav { padding: 1rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+        nav a { color: var(--accent); text-decoration: none; }
+        h1 { font-size: 2.2rem; margin-bottom: 1rem; line-height: 1.3; }
+        h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; color: var(--accent); }
+        h3 { font-size: 1.2rem; margin: 1.5rem 0 0.75rem; }
+        p { margin-bottom: 1rem; }
+        .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+        pre { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin: 1rem 0 1.5rem; overflow-x: auto; font-size: 0.88rem; line-height: 1.5; }
+        code { font-family: 'SF Mono', 'Fira Code', monospace; }
+        p code, li code { background: var(--surface); border: 1px solid var(--border); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.88em; }
+        ul, ol { margin: 0 0 1rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .cta { background: linear-gradient(135deg, #1a3a5c, #1a2d4a); border: 1px solid var(--accent); border-radius: 12px; padding: 2rem; margin: 2rem 0; text-align: center; }
+        .cta h3 { color: var(--accent); margin-top: 0; }
+        .cta a.btn { display: inline-block; background: var(--accent); color: #000; padding: 0.75rem 2rem; border-radius: 8px; font-weight: bold; text-decoration: none; margin-top: 1rem; }
+        .cta a.btn:hover { opacity: 0.9; text-decoration: none; }
+        .highlight { background: var(--surface); border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; }
+        th, td { border: 1px solid var(--border); padding: 0.75rem; text-align: left; }
+        th { background: var(--surface); }
+        .step { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+        .step-number { color: var(--accent); font-size: 0.9rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .json-toggle { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin: 1.5rem 0; }
+        .json-toggle summary { cursor: pointer; padding: 1rem 1.25rem; font-weight: 600; color: var(--accent); }
+        .json-toggle summary:hover { background: rgba(88,166,255,0.05); }
+        .json-toggle pre { margin: 0; border: none; border-top: 1px solid var(--border); border-radius: 0 0 8px 8px; max-height: 500px; overflow-y: auto; }
+        footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+        @media (max-width: 600px) { h1 { font-size: 1.6rem; } .cta { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav><a href="https://bonskari.github.io/n8n-ai-workflows/">&larr; n8n AI Workflow Templates</a> &middot; <a href="https://bonskari.github.io/n8n-ai-workflows/blog/">Blog</a></nav>
+
+    <article>
+        <h1>Automate Resume Screening with n8n + Ollama (AI Recruitment Pipeline)</h1>
+        <p class="meta">Published March 24, 2026 &middot; 11 min read</p>
+
+        <p>Recruiters spend 23 hours screening resumes for a single hire. For popular positions, that means reading 200&ndash;500 applications, most of which are obvious non-matches. AI resume screening tools like HireVue or Pymetrics charge $5,000&ndash;25,000/year and require uploading candidate data to cloud servers.</p>
+
+        <p>With n8n and Ollama, you can build a resume screening pipeline that runs on your own hardware &mdash; zero API costs, candidate data stays private (critical for GDPR), and you control exactly how scoring works.</p>
+
+        <p>In this tutorial, you'll build a workflow that:</p>
+        <ol>
+            <li>Receives resumes via email attachment or webhook upload</li>
+            <li>Extracts text from PDF/DOCX documents</li>
+            <li>Scores candidates against your job requirements using local AI</li>
+            <li>Extracts structured data (skills, experience, education)</li>
+            <li>Ranks applicants and sends a shortlist to the hiring manager</li>
+        </ol>
+
+        <h2>Why Local AI for Resume Screening?</h2>
+
+        <p>Resume screening is a perfect use case for self-hosted AI:</p>
+
+        <table>
+            <tr><th>Factor</th><th>Cloud AI Screening</th><th>Local AI (Ollama)</th></tr>
+            <tr><td>Data privacy (GDPR)</td><td>Candidate PII sent to US servers</td><td>Data never leaves your infrastructure</td></tr>
+            <tr><td>Cost per resume</td><td>$0.05&ndash;0.50 per API call</td><td>$0 (runs on your hardware)</td></tr>
+            <tr><td>Bias auditability</td><td>Black box &mdash; can't inspect model</td><td>Full control over prompts and scoring</td></tr>
+            <tr><td>Customization</td><td>Generic scoring models</td><td>Tailored to your exact job requirements</td></tr>
+            <tr><td>Volume limits</td><td>Rate-limited</td><td>Unlimited (hardware-bound only)</td></tr>
+        </table>
+
+        <div class="highlight">
+            <p><strong>GDPR note:</strong> Under GDPR Article 22, candidates have the right to not be subject to purely automated decision-making. This workflow is designed as a <em>screening assistant</em> &mdash; it ranks and scores to help humans make faster decisions, not to auto-reject candidates. Always have a human make the final hiring decision.</p>
+        </div>
+
+        <h2>The Architecture</h2>
+
+        <pre><code>Resume Received (Email/Webhook)
+    &darr;
+[Extract Text] &rarr; [Parse Sections] &rarr; [Score Against Requirements]
+                                                      &darr;
+                                               [Extract Skills]
+                                                      &darr;
+                                              [Rank Candidates]
+                                                      &darr;
+                                          [Email Shortlist Report]</code></pre>
+
+        <h2>Step 1: Receive and Extract Resume Text</h2>
+
+        <p>Set up a webhook that accepts resume uploads (PDF or DOCX):</p>
+
+        <pre><code>// Webhook Node
+HTTP Method: POST
+Path: /resume-screen
+Binary Property: file
+
+// For email-based intake, use IMAP Trigger instead
+// and extract attachments from the email</code></pre>
+
+        <p>Then extract text from the document. For PDFs, use n8n's built-in PDF extraction or an HTTP Request to a local tool:</p>
+
+        <pre><code>// Function Node: Extract Text
+// For PDF: use pdf-parse or similar
+// For DOCX: extract from XML structure
+const text = $input.first().json.text ||
+  $input.first().json.body ||
+  Buffer.from($input.first().binary.file.data, 'base64').toString('utf-8');
+
+// Clean up extracted text
+const cleaned = text
+  .replace(/\s+/g, ' ')
+  .replace(/[^\x20-\x7E\n]/g, '')
+  .trim()
+  .substring(0, 4000); // Stay within context window
+
+return [{ json: { resume_text: cleaned } }];</code></pre>
+
+        <h2>Step 2: Define Job Requirements</h2>
+
+        <p>Create a structured job requirements template that Ollama will score against:</p>
+
+        <pre><code>// Set Node: Job Requirements
+{
+  "job_title": "Senior Backend Engineer",
+  "required_skills": ["Python", "PostgreSQL", "REST APIs", "Docker"],
+  "preferred_skills": ["Kubernetes", "AWS", "Redis", "GraphQL"],
+  "min_experience_years": 5,
+  "education": "BS in Computer Science or equivalent",
+  "key_responsibilities": [
+    "Design and build scalable microservices",
+    "Lead technical design reviews",
+    "Mentor junior engineers"
+  ]
+}</code></pre>
+
+        <h2>Step 3: AI Scoring with Ollama</h2>
+
+        <p>The core scoring prompt asks Ollama to evaluate the resume against your requirements:</p>
+
+        <pre><code>// HTTP Request to Ollama
+{
+  "model": "llama3:8b",
+  "prompt": "You are an expert technical recruiter. Score this resume against the job requirements.\n\nJob: Senior Backend Engineer\nRequired Skills: Python, PostgreSQL, REST APIs, Docker\nPreferred Skills: Kubernetes, AWS, Redis, GraphQL\nMin Experience: 5 years\n\nResume:\n${resume_text}\n\nRespond in this exact JSON format:\n{\n  \"overall_score\": 0-100,\n  \"skills_match\": {\n    \"required_met\": [\"list of required skills found\"],\n    \"required_missing\": [\"list of required skills NOT found\"],\n    \"preferred_met\": [\"list of preferred skills found\"]\n  },\n  \"experience_years\": estimated_number,\n  \"experience_relevance\": \"high/medium/low\",\n  \"education_match\": true/false,\n  \"strengths\": [\"top 3 strengths for this role\"],\n  \"concerns\": [\"top 3 concerns or gaps\"],\n  \"recommendation\": \"strong_yes/yes/maybe/no\",\n  \"summary\": \"2-3 sentence assessment\"\n}",
+  "stream": false,
+  "options": {
+    "temperature": 0.1,
+    "num_predict": 1000
+  }
+}</code></pre>
+
+        <div class="highlight">
+            <p><strong>Why <code>temperature: 0.1</code>?</strong> Resume scoring must be consistent. Two identical resumes should get the same score. Low temperature makes the model deterministic. The structured JSON output format also helps &mdash; Ollama follows formatting instructions more reliably at low temperatures.</p>
+        </div>
+
+        <h2>Step 4: Extract and Structure Results</h2>
+
+        <p>Parse the AI response and add metadata:</p>
+
+        <pre><code>// Function Node: Parse Scoring Results
+const response = JSON.parse($json.data).response;
+let scoring;
+
+try {
+  // Extract JSON from the response
+  const jsonMatch = response.match(/\{[\s\S]*\}/);
+  scoring = JSON.parse(jsonMatch[0]);
+} catch (e) {
+  scoring = {
+    overall_score: 0,
+    recommendation: 'error',
+    summary: 'Failed to parse AI response'
+  };
+}
+
+return [{
+  json: {
+    candidate_name: $('Extract Text').item.json.candidate_name || 'Unknown',
+    email: $('Extract Text').item.json.email || '',
+    ...scoring,
+    reviewed_at: new Date().toISOString(),
+    reviewer: 'AI (Ollama llama3:8b)'
+  }
+}];</code></pre>
+
+        <h2>Step 5: Rank and Report</h2>
+
+        <p>After processing all resumes, sort by score and email the shortlist:</p>
+
+        <pre><code>// Function Node: Generate Shortlist Report
+const candidates = $input.all()
+  .map(item => item.json)
+  .sort((a, b) => b.overall_score - a.overall_score);
+
+const shortlist = candidates.filter(c => c.overall_score >= 60);
+
+let report = `# Resume Screening Report\n\n`;
+report += `**Position:** Senior Backend Engineer\n`;
+report += `**Total Resumes:** ${candidates.length}\n`;
+report += `**Shortlisted:** ${shortlist.length}\n\n`;
+report += `## Top Candidates\n\n`;
+
+for (const c of shortlist) {
+  report += `### ${c.candidate_name} — Score: ${c.overall_score}/100\n`;
+  report += `**Recommendation:** ${c.recommendation}\n`;
+  report += `**Skills Match:** ${c.skills_match.required_met.join(', ')}\n`;
+  report += `**Missing:** ${c.skills_match.required_missing.join(', ') || 'None'}\n`;
+  report += `**Summary:** ${c.summary}\n\n`;
+}
+
+return [{ json: { report, shortlist_count: shortlist.length, total: candidates.length } }];</code></pre>
+
+        <h2>Reducing AI Bias in Resume Screening</h2>
+
+        <p>AI models can inherit biases from training data. Here's how to mitigate this:</p>
+
+        <ol>
+            <li><strong>Remove identifying information before scoring.</strong> Strip names, photos, addresses, and university names from the text before sending to Ollama. Score purely on skills and experience.</li>
+            <li><strong>Use skills-based scoring only.</strong> The prompt above focuses on skills match, experience relevance, and technical fit &mdash; not proxies like company prestige or university ranking.</li>
+            <li><strong>Audit regularly.</strong> Run the same diverse set of test resumes monthly to check for scoring drift. Log all scores for compliance.</li>
+            <li><strong>Human review is mandatory.</strong> This is a screening tool, not a hiring tool. Every shortlisted candidate should be reviewed by a human before any outreach.</li>
+        </ol>
+
+        <h2>Scaling for High Volume</h2>
+
+        <p>For companies receiving 500+ applications per posting:</p>
+
+        <ul>
+            <li><strong>Batch processing:</strong> Use n8n's "Split in Batches" node to process 10 resumes at a time, preventing Ollama from queuing too many requests</li>
+            <li><strong>Pre-filtering:</strong> Add a keyword filter before AI scoring &mdash; if the resume doesn't contain any required skills as plain text, skip the AI step</li>
+            <li><strong>Database storage:</strong> Save all scores to PostgreSQL for historical analysis and compliance auditing</li>
+            <li><strong>Scheduled runs:</strong> Instead of real-time processing, batch resumes hourly and process them in bulk</li>
+        </ul>
+
+        <h2>Complete Workflow JSON</h2>
+
+        <details class="json-toggle">
+            <summary>Click to expand full workflow JSON</summary>
+            <pre><code>{
+  "name": "AI Resume Screening Pipeline (Ollama)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "resume-screen",
+        "responseMode": "lastNode"
+      },
+      "id": "webhook",
+      "name": "Resume Upload Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "resume",
+              "name": "resume_text",
+              "value": "={{ $json.body.resume_text || $json.body.text || 'No resume text provided' }}",
+              "type": "string"
+            },
+            {
+              "id": "name",
+              "name": "candidate_name",
+              "value": "={{ $json.body.candidate_name || 'Unknown' }}",
+              "type": "string"
+            },
+            {
+              "id": "email",
+              "name": "candidate_email",
+              "value": "={{ $json.body.email || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "job",
+              "name": "job_title",
+              "value": "={{ $json.body.job_title || 'Senior Backend Engineer' }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "prepare",
+      "name": "Prepare Resume Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3:8b', prompt: 'You are an expert technical recruiter. Score this resume against the job requirements.\\n\\nJob: ' + $json.job_title + '\\nRequired Skills: Python, PostgreSQL, REST APIs, Docker\\nPreferred: Kubernetes, AWS, Redis, GraphQL\\nMin Experience: 5 years\\n\\nResume:\\n' + ($json.resume_text || '').substring(0, 4000) + '\\n\\nRespond in JSON: {\"overall_score\": 0-100, \"skills_match\": {\"required_met\": [], \"required_missing\": [], \"preferred_met\": []}, \"experience_years\": N, \"recommendation\": \"strong_yes/yes/maybe/no\", \"summary\": \"2-3 sentences\"}', stream: false, options: { temperature: 0.1, num_predict: 800 } }) }}",
+        "options": { "timeout": 120000 }
+      },
+      "id": "score",
+      "name": "Score Resume (Ollama)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "result",
+              "name": "scoring",
+              "value": "={{ JSON.parse($json.data).response }}",
+              "type": "string"
+            },
+            {
+              "id": "candidate",
+              "name": "candidate_name",
+              "value": "={{ $('Prepare Resume Data').item.json.candidate_name }}",
+              "type": "string"
+            },
+            {
+              "id": "email",
+              "name": "candidate_email",
+              "value": "={{ $('Prepare Resume Data').item.json.candidate_email }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "output",
+      "name": "Format Results",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [900, 300]
+    }
+  ],
+  "connections": {
+    "Resume Upload Webhook": {
+      "main": [[{ "node": "Prepare Resume Data", "type": "main", "index": 0 }]]
+    },
+    "Prepare Resume Data": {
+      "main": [[{ "node": "Score Resume (Ollama)", "type": "main", "index": 0 }]]
+    },
+    "Score Resume (Ollama)": {
+      "main": [[{ "node": "Format Results", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "AI" }, { "name": "Ollama" }, { "name": "HR" }, { "name": "Recruitment" }]
+}</code></pre>
+        </details>
+
+        <h2>Wrapping Up</h2>
+
+        <p>AI resume screening with n8n + Ollama gives your recruitment team a fast, private, and customizable first-pass filter. It handles the tedious work of matching skills against requirements and ranking candidates, so recruiters can spend their time on interviews and relationship-building instead of reading 500 PDFs.</p>
+
+        <p>The key advantages over cloud-based solutions: your candidate data stays on your infrastructure (critical for GDPR), you pay zero per-resume processing costs, and you have full control over how scoring works &mdash; no black-box AI making decisions you can't audit.</p>
+
+        <div class="cta">
+            <h3>Want 11 Production-Ready AI Workflows?</h3>
+            <p>The Self-Hosted AI Workflow Pack includes resume screening, lead scoring, email automation, document processing, and 7 more n8n + Ollama templates. One payment, unlimited runs, zero API costs.</p>
+            <a href="https://bonskari.github.io/n8n-ai-workflows/" class="btn">Get the Full Pack &mdash; $39</a>
+        </div>
+
+    </article>
+
+    <footer>
+        <p>&copy; 2026 Workflow Forge. All rights reserved.</p>
+    </footer>
+</div>
+</body>
+</html>
