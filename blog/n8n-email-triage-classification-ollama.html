@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automate Email Triage with Local AI: n8n + Ollama Email Classification Workflow</title>
+    <meta name="description" content="Build an AI-powered email triage system with n8n and Ollama. Automatically classify emails into support, sales, billing, spam, and urgent categories. Route to Slack channels and auto-draft replies. 100% local, zero API costs.">
+    <meta property="og:title" content="Automate Email Triage with Local AI: n8n + Ollama Email Classification">
+    <meta property="og:description" content="Classify and route emails automatically using local AI. Free n8n workflow that sorts incoming mail into categories, routes to the right team, and drafts responses. No API keys needed.">
+    <meta property="og:type" content="article">
+    <link rel="canonical" href="https://bonskari.github.io/n8n-ai-workflows/blog/n8n-email-triage-classification-ollama.html">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "Automate Email Triage with Local AI: n8n + Ollama Email Classification Workflow",
+        "description": "Build an AI-powered email triage system with n8n and Ollama. Automatically classify emails and route them to the right team.",
+        "author": {"@type": "Organization", "name": "Workflow Forge"},
+        "datePublished": "2026-03-24",
+        "publisher": {"@type": "Organization", "name": "Workflow Forge"}
+    }
+    </script>
+    <style>
+        :root { --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff; --green: #3fb950; --orange: #d29922; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+        .container { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem; }
+        nav { padding: 1rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+        nav a { color: var(--accent); text-decoration: none; }
+        h1 { font-size: 2.2rem; margin-bottom: 1rem; line-height: 1.3; }
+        h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; color: var(--accent); }
+        h3 { font-size: 1.2rem; margin: 1.5rem 0 0.75rem; }
+        p { margin-bottom: 1rem; }
+        .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+        pre { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin: 1rem 0 1.5rem; overflow-x: auto; font-size: 0.88rem; line-height: 1.5; }
+        code { font-family: 'SF Mono', 'Fira Code', monospace; }
+        .inline-code { background: var(--surface); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+        p code, li code { background: var(--surface); border: 1px solid var(--border); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.88em; }
+        ul, ol { margin: 0 0 1rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .cta { background: linear-gradient(135deg, #1a3a5c, #1a2d4a); border: 1px solid var(--accent); border-radius: 12px; padding: 2rem; margin: 2rem 0; text-align: center; }
+        .cta h3 { color: var(--accent); margin-top: 0; }
+        .cta a.btn { display: inline-block; background: var(--accent); color: #000; padding: 0.75rem 2rem; border-radius: 8px; font-weight: bold; text-decoration: none; margin-top: 1rem; }
+        .cta a.btn:hover { opacity: 0.9; text-decoration: none; }
+        .highlight { background: var(--surface); border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; }
+        th, td { border: 1px solid var(--border); padding: 0.75rem; text-align: left; }
+        th { background: var(--surface); }
+        .step { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+        .step-number { color: var(--accent); font-size: 0.9rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .json-toggle { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin: 1.5rem 0; }
+        .json-toggle summary { cursor: pointer; padding: 1rem 1.25rem; font-weight: 600; color: var(--accent); }
+        .json-toggle summary:hover { background: rgba(88,166,255,0.05); }
+        .json-toggle pre { margin: 0; border: none; border-top: 1px solid var(--border); border-radius: 0 0 8px 8px; max-height: 500px; overflow-y: auto; }
+        footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+        @media (max-width: 600px) { h1 { font-size: 1.6rem; } .cta { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav><a href="https://bonskari.github.io/n8n-ai-workflows/">&larr; n8n AI Workflow Templates</a> &middot; <a href="https://bonskari.github.io/n8n-ai-workflows/blog/">Blog</a></nav>
+
+    <article>
+        <h1>Automate Email Triage with Local AI: n8n + Ollama Email Classification Workflow</h1>
+        <p class="meta">Published March 24, 2026 &middot; 12 min read</p>
+
+        <p>Your inbox is a mess. Support tickets mixed with sales inquiries, billing questions buried under spam, and urgent messages sitting unread for hours. Most email classification tools charge per message and require sending every email &mdash; including sensitive internal communications &mdash; to external AI providers.</p>
+
+        <p>With n8n and Ollama, you can build an email triage system that runs entirely on your own hardware. Every email stays on your server, classification costs nothing per message, and the system works even when your internet goes down.</p>
+
+        <p>In this tutorial, you'll build a workflow that:</p>
+        <ol>
+            <li>Polls your inbox via IMAP (or Gmail API)</li>
+            <li>Classifies each email into categories: <strong>support</strong>, <strong>sales</strong>, <strong>billing</strong>, <strong>urgent</strong>, or <strong>spam</strong></li>
+            <li>Auto-labels emails and routes notifications to the right Slack channel</li>
+            <li>Drafts contextual replies for common categories</li>
+            <li>Logs everything to a spreadsheet for tracking</li>
+        </ol>
+
+        <h2>Why Local AI for Email Triage</h2>
+
+        <p>Emails are some of the most sensitive data in any organization. They contain customer details, financial information, internal discussions, and legal communications. Sending all of that to OpenAI or Google's API creates real compliance and privacy risks.</p>
+
+        <table>
+            <tr><th>Concern</th><th>Cloud AI (GPT-4, Gemini)</th><th>Local AI (Ollama)</th></tr>
+            <tr><td><strong>Data privacy</strong></td><td>Emails sent to third-party servers</td><td>Everything stays on your machine</td></tr>
+            <tr><td><strong>Cost at scale</strong></td><td>$0.01&ndash;0.06 per email</td><td>$0 per email after hardware</td></tr>
+            <tr><td><strong>Compliance</strong></td><td>May violate GDPR, HIPAA, SOC 2</td><td>Full control over data residency</td></tr>
+            <tr><td><strong>Reliability</strong></td><td>Depends on API uptime</td><td>Works offline, no rate limits</td></tr>
+            <tr><td><strong>Speed</strong></td><td>Network latency + queue time</td><td>2&ndash;4 seconds on modest hardware</td></tr>
+        </table>
+
+        <div class="highlight">
+            <p><strong>The privacy argument is decisive here.</strong> Email classification is one of the strongest use cases for local AI. A company processing 200 emails/day through GPT-4 spends $120&ndash;360/month on API calls alone. With Ollama, that same volume costs nothing and keeps customer data off third-party servers.</p>
+        </div>
+
+        <h2>Architecture Overview</h2>
+
+        <p>The workflow connects four components in a straightforward pipeline:</p>
+
+        <pre><code>[IMAP/Gmail: Fetch new emails]
+        |
+        v
+[Ollama: Classify email category + priority]
+        |
+        v
+[Switch: Route by category]
+   /    |    |    \     \
+  v     v    v     v     v
+[Support][Sales][Billing][Urgent][Spam]
+  |      |     |      |
+  v      v     v      v
+[Slack] [Slack][Slack][Slack + SMS]
+  |      |     |      |
+  v      v     v      v
+[Ollama: Draft reply for each category]
+        |
+        v
+[Google Sheets: Log classification]</code></pre>
+
+        <p>The IMAP trigger polls every 2 minutes. Each email takes 3&ndash;6 seconds to classify and draft a response &mdash; two Ollama calls. For a mailbox receiving 100 emails/day, that's under 10 minutes of total compute.</p>
+
+        <h2>Prerequisites</h2>
+
+        <p>You need n8n and Ollama running. If you haven't set these up yet:</p>
+
+        <pre><code># Install Ollama and pull a model
+curl -fsSL https://ollama.ai/install.sh | sh
+ollama pull llama3:8b
+
+# Run n8n in Docker
+docker run -d --name n8n -p 5678:5678 \
+  --add-host=host.docker.internal:host-gateway \
+  -v n8n_data:/home/node/.n8n \
+  n8nio/n8n</code></pre>
+
+        <p>You'll also need IMAP credentials for your email account. For Gmail, enable IMAP in settings and create an <a href="https://support.google.com/accounts/answer/185833">App Password</a>. For other providers, use your standard IMAP server and credentials.</p>
+
+        <div class="highlight">
+            <p><strong>Docker users:</strong> Use <code>http://host.docker.internal:11434</code> for Ollama URLs in your n8n workflows. If n8n runs natively (not in Docker), use <code>http://localhost:11434</code>.</p>
+        </div>
+
+        <h2>Step-by-Step: Building the Email Triage Workflow</h2>
+
+        <div class="step">
+            <div class="step-number">STEP 1: Connect Your Inbox</div>
+            <p>Add an <strong>IMAP Email</strong> trigger node in n8n. Configure it with your mail server settings:</p>
+            <ul>
+                <li><strong>Host:</strong> <code>imap.gmail.com</code> (or your provider's IMAP server)</li>
+                <li><strong>Port:</strong> <code>993</code></li>
+                <li><strong>User:</strong> Your email address</li>
+                <li><strong>Password:</strong> Your app password (not your regular password)</li>
+                <li><strong>Mailbox:</strong> <code>INBOX</code></li>
+                <li><strong>Poll interval:</strong> Every 2 minutes</li>
+            </ul>
+            <p>The node outputs <code>subject</code>, <code>from</code>, <code>text</code> (plain body), and <code>html</code> for each new email. We'll use the plain text body for classification since it's cleaner for the LLM to parse.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 2: Classify with Ollama</div>
+            <p>Add an HTTP Request node that sends the email to Ollama for classification. The prompt is the core of the system &mdash; it needs to be specific about categories and output format:</p>
+            <pre><code>You are an email triage system. Classify this email into exactly
+one category and assign a priority level.
+
+Categories:
+- support: Customer needs help, bug reports, feature requests
+- sales: Purchase inquiries, pricing questions, partnership proposals
+- billing: Invoice questions, payment issues, subscription changes
+- urgent: Security alerts, system outages, legal notices, time-sensitive
+- spam: Marketing, newsletters, unsolicited outreach, promotions
+
+Priority levels: high, medium, low
+
+From: {{ $json.from }}
+Subject: {{ $json.subject }}
+Body: {{ $json.text.substring(0, 1500) }}
+
+Respond in this EXACT JSON format, nothing else:
+{"category": "&lt;category&gt;", "priority": "&lt;high|medium|low&gt;",
+ "reason": "&lt;one sentence explanation&gt;",
+ "suggested_labels": ["&lt;label1&gt;", "&lt;label2&gt;"]}</code></pre>
+            <p>Key details: We truncate the body to 1,500 characters to keep inference fast and avoid context window issues. Temperature is set to <code>0.1</code> for consistent, deterministic classification.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 3: Route by Category</div>
+            <p>Add a <strong>Switch</strong> node after classification. Parse the JSON response and route based on the <code>category</code> field:</p>
+            <ul>
+                <li><strong>support</strong> &rarr; #support-tickets Slack channel</li>
+                <li><strong>sales</strong> &rarr; #sales-leads Slack channel</li>
+                <li><strong>billing</strong> &rarr; #billing Slack channel</li>
+                <li><strong>urgent</strong> &rarr; #urgent-alerts Slack channel (+ optional SMS via Twilio)</li>
+                <li><strong>spam</strong> &rarr; Log only, no notification</li>
+            </ul>
+            <p>Each Slack message includes the sender, subject, category, priority, and the AI's reasoning. This gives the receiving team enough context to act without opening the email.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 4: Auto-Draft Replies</div>
+            <p>For non-spam categories, add a second Ollama call that drafts a contextual reply. The prompt varies by category:</p>
+            <pre><code>Draft a professional reply to this email. Be helpful and concise.
+
+Category: {{ $json.category }}
+Original email from: {{ $json.from }}
+Subject: {{ $json.subject }}
+Body: {{ $json.text.substring(0, 1500) }}
+
+Rules:
+- For support: Acknowledge the issue, ask for details if needed,
+  mention a ticket has been created
+- For sales: Thank them for interest, mention someone will follow
+  up within 24 hours
+- For billing: Confirm receipt, mention the billing team will review
+- For urgent: Acknowledge immediately, confirm it's being escalated
+
+Write ONLY the reply body. No subject line. Keep it under 150 words.</code></pre>
+            <p>The drafted reply is saved as a Gmail draft (using the Gmail node) or sent to a review queue. Never auto-send without human review &mdash; even good AI makes mistakes.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 5: Log to Spreadsheet</div>
+            <p>Add a Google Sheets node at the end of the pipeline to log every classification. Track columns: <code>timestamp</code>, <code>from</code>, <code>subject</code>, <code>category</code>, <code>priority</code>, <code>reason</code>, <code>draft_created</code>. This data is invaluable for tuning your prompts and measuring accuracy over time.</p>
+        </div>
+
+        <h2>The Complete Workflow JSON</h2>
+
+        <p>Import this directly into your n8n instance. You'll need to update the IMAP credentials and Slack webhook URLs for your environment.</p>
+
+        <details class="json-toggle">
+            <summary>Click to expand full workflow JSON</summary>
+            <pre><code>{
+  "name": "AI Email Triage + Auto-Draft (Ollama)",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": { "item": [{ "mode": "everyMinute", "minute": 2 }] },
+        "mailbox": "INBOX",
+        "options": { "allowUnauthorizedCerts": false }
+      },
+      "id": "imap-trigger",
+      "name": "Fetch New Emails",
+      "type": "n8n-nodes-base.imapEmail",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "credentials": { "imap": { "id": "REPLACE_WITH_YOUR_IMAP_CREDENTIAL_ID", "name": "IMAP Account" } }
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3:8b', prompt: 'You are an email triage system. Classify this email into exactly one category and assign a priority level.\\n\\nCategories:\\n- support: Customer needs help, bug reports, feature requests, technical issues\\n- sales: Purchase inquiries, pricing questions, partnership proposals, demo requests\\n- billing: Invoice questions, payment issues, subscription changes, refund requests\\n- urgent: Security alerts, system outages, legal notices, time-sensitive deadlines\\n- spam: Marketing newsletters, unsolicited outreach, promotions, automated notifications\\n\\nPriority levels: high, medium, low\\n\\nFrom: ' + ($json.from || 'Unknown') + '\\nSubject: ' + ($json.subject || 'No subject') + '\\nBody: ' + ($json.text || $json.html || 'Empty').substring(0, 1500) + '\\n\\nRespond in this EXACT JSON format, nothing else:\\n{\"category\": \"<support|sales|billing|urgent|spam>\", \"priority\": \"<high|medium|low>\", \"reason\": \"<one sentence explanation>\", \"suggested_labels\": [\"<label1>\", \"<label2>\"]}', stream: false, options: { temperature: 0.1, num_predict: 200 } }) }}",
+        "options": { "timeout": 60000 }
+      },
+      "id": "classify-email",
+      "name": "Classify Email (Ollama)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "from", "name": "from", "value": "={{ $('Fetch New Emails').item.json.from }}", "type": "string" },
+            { "id": "subject", "name": "subject", "value": "={{ $('Fetch New Emails').item.json.subject }}", "type": "string" },
+            { "id": "text", "name": "text", "value": "={{ $('Fetch New Emails').item.json.text || $('Fetch New Emails').item.json.html || '' }}", "type": "string" },
+            { "id": "classification", "name": "classification", "value": "={{ (() => { try { return JSON.parse(JSON.parse($json.data).response) } catch(e) { return { category: 'support', priority: 'medium', reason: 'Parse error - defaulting to support' } } })() }}", "type": "string" }
+          ]
+        }
+      },
+      "id": "parse-result",
+      "name": "Parse Classification",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "rules": [
+            { "outputKey": "support", "conditions": { "conditions": [{ "leftValue": "={{ $json.classification.category }}", "rightValue": "support", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "sales", "conditions": { "conditions": [{ "leftValue": "={{ $json.classification.category }}", "rightValue": "sales", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "billing", "conditions": { "conditions": [{ "leftValue": "={{ $json.classification.category }}", "rightValue": "billing", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "urgent", "conditions": { "conditions": [{ "leftValue": "={{ $json.classification.category }}", "rightValue": "urgent", "operator": { "type": "string", "operation": "equals" } }] } },
+            { "outputKey": "spam", "conditions": { "conditions": [{ "leftValue": "={{ $json.classification.category }}", "rightValue": "spam", "operator": { "type": "string", "operation": "equals" } }] } }
+          ]
+        }
+      },
+      "id": "route-email",
+      "name": "Route by Category",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [920, 300]
+    },
+    {
+      "parameters": {
+        "url": "YOUR_SUPPORT_SLACK_WEBHOOK_URL",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: ':email: *New Support Email*\\n*From:* ' + $json.from + '\\n*Subject:* ' + $json.subject + '\\n*Priority:* ' + $json.classification.priority + '\\n*Reason:* ' + $json.classification.reason }) }}"
+      },
+      "id": "slack-support",
+      "name": "Slack: Support",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1140, 100]
+    },
+    {
+      "parameters": {
+        "url": "YOUR_SALES_SLACK_WEBHOOK_URL",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: ':moneybag: *New Sales Inquiry*\\n*From:* ' + $json.from + '\\n*Subject:* ' + $json.subject + '\\n*Priority:* ' + $json.classification.priority + '\\n*Reason:* ' + $json.classification.reason }) }}"
+      },
+      "id": "slack-sales",
+      "name": "Slack: Sales",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1140, 260]
+    },
+    {
+      "parameters": {
+        "url": "YOUR_BILLING_SLACK_WEBHOOK_URL",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: ':receipt: *Billing Email*\\n*From:* ' + $json.from + '\\n*Subject:* ' + $json.subject + '\\n*Priority:* ' + $json.classification.priority + '\\n*Reason:* ' + $json.classification.reason }) }}"
+      },
+      "id": "slack-billing",
+      "name": "Slack: Billing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1140, 420]
+    },
+    {
+      "parameters": {
+        "url": "YOUR_URGENT_SLACK_WEBHOOK_URL",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: ':rotating_light: *URGENT EMAIL*\\n*From:* ' + $json.from + '\\n*Subject:* ' + $json.subject + '\\n*Priority:* HIGH\\n*Reason:* ' + $json.classification.reason }) }}"
+      },
+      "id": "slack-urgent",
+      "name": "Slack: Urgent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1140, 580]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3:8b', prompt: 'Draft a professional reply to this email. Be helpful and concise.\\n\\nCategory: ' + $json.classification.category + '\\nOriginal email from: ' + $json.from + '\\nSubject: ' + $json.subject + '\\nBody: ' + ($json.text || '').substring(0, 1500) + '\\n\\nRules:\\n- For support: Acknowledge the issue, ask clarifying questions if needed, mention a ticket has been created\\n- For sales: Thank them for interest, mention someone from the team will follow up within 24 hours\\n- For billing: Confirm receipt of their inquiry, mention the billing team will review and respond\\n- For urgent: Acknowledge immediately, confirm the issue is being escalated to the on-call team\\n\\nWrite ONLY the reply body text. No subject line. No signature. Keep it under 150 words.', stream: false, options: { temperature: 0.4, num_predict: 400 } }) }}",
+        "options": { "timeout": 60000 }
+      },
+      "id": "draft-reply",
+      "name": "Draft Reply (Ollama)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1360, 340]
+    }
+  ],
+  "connections": {
+    "Fetch New Emails": {
+      "main": [[{ "node": "Classify Email (Ollama)", "type": "main", "index": 0 }]]
+    },
+    "Classify Email (Ollama)": {
+      "main": [[{ "node": "Parse Classification", "type": "main", "index": 0 }]]
+    },
+    "Parse Classification": {
+      "main": [[{ "node": "Route by Category", "type": "main", "index": 0 }]]
+    },
+    "Route by Category": {
+      "main": [
+        [{ "node": "Slack: Support", "type": "main", "index": 0 }],
+        [{ "node": "Slack: Sales", "type": "main", "index": 0 }],
+        [{ "node": "Slack: Billing", "type": "main", "index": 0 }],
+        [{ "node": "Slack: Urgent", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Slack: Support": {
+      "main": [[{ "node": "Draft Reply (Ollama)", "type": "main", "index": 0 }]]
+    },
+    "Slack: Sales": {
+      "main": [[{ "node": "Draft Reply (Ollama)", "type": "main", "index": 0 }]]
+    },
+    "Slack: Billing": {
+      "main": [[{ "node": "Draft Reply (Ollama)", "type": "main", "index": 0 }]]
+    },
+    "Slack: Urgent": {
+      "main": [[{ "node": "Draft Reply (Ollama)", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "AI" }, { "name": "Ollama" }, { "name": "Email" }, { "name": "Triage" }]
+}</code></pre>
+        </details>
+
+        <h3>Testing the Classification</h3>
+
+        <p>Before connecting your real inbox, test the classification prompt directly with curl:</p>
+
+        <pre><code>curl -s http://localhost:11434/api/generate -d '{
+  "model": "llama3:8b",
+  "prompt": "You are an email triage system. Classify this email into exactly one category.\n\nCategories: support, sales, billing, urgent, spam\nPriority: high, medium, low\n\nFrom: john@bigcorp.com\nSubject: Pricing for enterprise plan\nBody: Hi, we are a 200-person company looking at your enterprise plan. Can you send pricing details and set up a demo call this week? We need to make a decision by end of month.\n\nRespond in JSON: {\"category\": \"...\", \"priority\": \"...\", \"reason\": \"...\"}",
+  "stream": false,
+  "options": { "temperature": 0.1 }
+}' | jq -r '.response'</code></pre>
+
+        <p>Expected output:</p>
+
+        <pre><code>{
+  "category": "sales",
+  "priority": "high",
+  "reason": "Enterprise pricing inquiry with specific timeline and team size indicates qualified purchase intent"
+}</code></pre>
+
+        <h2>Production Tips</h2>
+
+        <h3>Handling Attachments</h3>
+        <p>The IMAP node captures attachment metadata (filename, MIME type, size) but not content. For triage purposes, include attachment filenames in the classification prompt &mdash; a message with <code>invoice_Q1.pdf</code> attached is almost certainly a billing email. For full attachment analysis, save them to disk and process with a separate workflow.</p>
+
+        <h3>Rate Limiting and Queuing</h3>
+        <p>If your inbox receives bursts of email (100+ in minutes), Ollama will queue requests but response times will spike. Add a <strong>SplitInBatches</strong> node after the IMAP trigger to process 5 emails at a time with a 1-second delay between batches. This keeps inference smooth and avoids overwhelming your hardware.</p>
+
+        <pre><code>// In the SplitInBatches node settings:
+Batch Size: 5
+Options > Wait Between Batches: 1000 (ms)</code></pre>
+
+        <h3>Error Handling</h3>
+        <p>Ollama occasionally returns malformed JSON, especially with longer emails. Wrap the JSON parse in a try/catch (as shown in the Parse Classification node above) and default to <code>category: "support"</code> with <code>priority: "medium"</code>. This ensures no email gets silently dropped.</p>
+
+        <p>Add an Error Trigger workflow that sends a Slack notification when classification fails. Track the failure rate &mdash; if it exceeds 5%, your prompt likely needs tuning for your specific email patterns.</p>
+
+        <h3>Improving Accuracy Over Time</h3>
+        <p>Use the Google Sheets log to review classifications weekly. Look for patterns in misclassification:</p>
+        <ul>
+            <li><strong>Sales classified as support:</strong> Add examples of sales language to the prompt ("pricing," "demo," "proposal")</li>
+            <li><strong>Newsletters classified as sales:</strong> Add "newsletter," "unsubscribe" to spam criteria</li>
+            <li><strong>Internal emails misrouted:</strong> Add a pre-filter that checks sender domain before classification</li>
+        </ul>
+
+        <div class="highlight">
+            <p><strong>Model recommendation:</strong> <code>llama3:8b</code> handles email classification well for most inboxes. If you're processing highly technical or multilingual emails, upgrade to <code>llama3:70b</code> or try <code>mistral:7b-instruct</code> for better instruction following. The workflow JSON works with any Ollama model &mdash; just change the model name in the HTTP Request nodes.</p>
+        </div>
+
+        <h3>Multi-Language Support</h3>
+        <p>If your inbox receives emails in multiple languages, add a line to the classification prompt: <code>The email may be in any language. Classify based on content regardless of language. Always respond in English.</code> Llama 3 handles major European and Asian languages reasonably well for classification tasks.</p>
+
+        <div class="cta">
+            <h3>Want the Production-Ready Version?</h3>
+            <p>The <strong>Self-Hosted AI Workflow Pack</strong> includes an advanced email triage system with Gmail API integration, auto-labeling, threaded reply drafts, attachment analysis, and 10 more AI workflows &mdash; all running locally with Ollama.</p>
+            <a href="https://buy.stripe.com/28EaEXdSJ1I67WbaivabK0c" class="btn">Get All 11 Workflows &mdash; $39</a>
+            <p style="margin-top: 1rem; color: var(--muted); font-size: 0.85rem;">One-time purchase. No subscriptions. 30-day money-back guarantee.</p>
+        </div>
+
+        <h2>Next Steps</h2>
+
+        <ol>
+            <li><strong>Import the workflow</strong> &mdash; Copy the JSON above into n8n and update credentials</li>
+            <li><strong>Test with curl first</strong> &mdash; Validate classification accuracy before connecting your real inbox</li>
+            <li><strong>Connect IMAP</strong> &mdash; Point the trigger at your mailbox and monitor the first 50 classifications</li>
+            <li><strong>Add Slack webhooks</strong> &mdash; Replace the placeholder URLs with real incoming webhook URLs</li>
+            <li><strong>Enable draft replies</strong> &mdash; Connect the Gmail node to save drafts for human review</li>
+        </ol>
+
+        <p>For the free workflow JSON and more n8n + Ollama templates, check out our <a href="https://github.com/bonskari/n8n-ai-workflows">GitHub repository</a>.</p>
+
+        <h3>Further Reading</h3>
+        <ul>
+            <li><a href="/n8n-ai-workflows/blog/self-hosted-ai-workflows-n8n-ollama.html">Self-Hosted AI Workflows with n8n + Ollama</a></li>
+            <li><a href="/n8n-ai-workflows/blog/n8n-rag-knowledge-base-ollama-private.html">Build a Private RAG Knowledge Base with n8n + Ollama</a></li>
+            <li><a href="/n8n-ai-workflows/blog/n8n-ai-lead-scoring-ollama-workflow.html">AI Lead Scoring with n8n + Ollama</a></li>
+            <li><a href="/n8n-ai-workflows/blog/n8n-meeting-notes-summarizer-ollama.html">Meeting Notes Summarizer with n8n + Ollama</a></li>
+            <li><a href="/n8n-ai-workflows/blog/">All n8n + Ollama Tutorials</a></li>
+        </ul>
+    </article>
+
+    <footer>
+        <p>Published by <a href="https://bonskari.github.io/n8n-ai-workflows/">WorkflowForge</a> &middot; &copy; 2026 Workflow Forge. Built with n8n + Ollama.</p>
+    </footer>
+</div>
+</body>
+</html>
