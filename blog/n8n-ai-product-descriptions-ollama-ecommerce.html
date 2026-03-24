@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate AI Product Descriptions with n8n + Ollama (E-Commerce Automation)</title>
+    <meta name="description" content="Automate SEO product descriptions for your e-commerce store with n8n and Ollama. Generate unique, keyword-rich listings at scale using local AI. No API costs. Free workflow template.">
+    <meta property="og:title" content="AI Product Description Generator with n8n + Ollama — Free Workflow">
+    <meta property="og:description" content="Generate SEO-optimized product descriptions at scale using local AI. Free n8n workflow for Shopify, WooCommerce, and any e-commerce platform.">
+    <meta property="og:type" content="article">
+    <link rel="canonical" href="https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-product-descriptions-ollama-ecommerce.html">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Generate AI Product Descriptions with n8n + Ollama (E-Commerce Automation)",
+        "description": "Build an automated product description generator for e-commerce with n8n and Ollama. Create unique, SEO-optimized listings at scale using local AI. Free workflow template included.",
+        "author": {"@type": "Organization", "name": "Workflow Forge"},
+        "datePublished": "2026-03-24",
+        "publisher": {"@type": "Organization", "name": "Workflow Forge"}
+    }
+    </script>
+    <style>
+        :root { --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff; --green: #3fb950; --orange: #d29922; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+        .container { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem; }
+        nav { padding: 1rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+        nav a { color: var(--accent); text-decoration: none; }
+        h1 { font-size: 2.2rem; margin-bottom: 1rem; line-height: 1.3; }
+        h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; color: var(--accent); }
+        h3 { font-size: 1.2rem; margin: 1.5rem 0 0.75rem; }
+        p { margin-bottom: 1rem; }
+        .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+        pre { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin: 1rem 0 1.5rem; overflow-x: auto; font-size: 0.88rem; line-height: 1.5; }
+        code { font-family: 'SF Mono', 'Fira Code', monospace; }
+        p code, li code { background: var(--surface); border: 1px solid var(--border); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.88em; }
+        ul, ol { margin: 0 0 1rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .cta { background: linear-gradient(135deg, #1a3a5c, #1a2d4a); border: 1px solid var(--accent); border-radius: 12px; padding: 2rem; margin: 2rem 0; text-align: center; }
+        .cta h3 { color: var(--accent); margin-top: 0; }
+        .cta a.btn { display: inline-block; background: var(--accent); color: #000; padding: 0.75rem 2rem; border-radius: 8px; font-weight: bold; text-decoration: none; margin-top: 1rem; }
+        .cta a.btn:hover { opacity: 0.9; text-decoration: none; }
+        .highlight { background: var(--surface); border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; }
+        th, td { border: 1px solid var(--border); padding: 0.75rem; text-align: left; }
+        th { background: var(--surface); }
+        .step { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+        .step-number { color: var(--accent); font-size: 0.9rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .json-toggle { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin: 1.5rem 0; }
+        .json-toggle summary { cursor: pointer; padding: 1rem 1.25rem; font-weight: 600; color: var(--accent); }
+        .json-toggle summary:hover { background: rgba(88,166,255,0.05); }
+        .json-toggle pre { margin: 0; border: none; border-top: 1px solid var(--border); border-radius: 0 0 8px 8px; max-height: 500px; overflow-y: auto; }
+        footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+        @media (max-width: 600px) { h1 { font-size: 1.6rem; } .cta { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav><a href="https://bonskari.github.io/n8n-ai-workflows/">&larr; n8n AI Workflow Templates</a> &middot; <a href="https://bonskari.github.io/n8n-ai-workflows/blog/">Blog</a></nav>
+
+    <article>
+        <h1>Generate AI Product Descriptions with n8n + Ollama (E-Commerce Automation)</h1>
+        <p class="meta">Published March 24, 2026 &middot; 14 min read &middot; By Workflow Forge</p>
+
+        <p>Writing unique product descriptions is one of the biggest bottlenecks in e-commerce. Whether you manage 50 SKUs or 50,000, every listing needs a compelling, SEO-optimized description that converts browsers into buyers. Hiring copywriters costs $5&ndash;25 per description. Cloud AI APIs charge $0.01&ndash;0.05 each and send your product data to third parties. With n8n and Ollama, you can generate thousands of unique, keyword-rich descriptions on your own hardware &mdash; completely free after setup.</p>
+
+        <p>In this tutorial you'll build a workflow that:</p>
+        <ol>
+            <li>Reads product data from a spreadsheet, database, or API (Shopify, WooCommerce, etc.)</li>
+            <li>Generates unique, SEO-optimized descriptions using local AI</li>
+            <li>Produces multiple variants (short, long, bullet points, meta description)</li>
+            <li>Applies brand voice and tone guidelines consistently</li>
+            <li>Outputs formatted descriptions ready to upload to your store</li>
+        </ol>
+
+        <h2>Why Local AI for Product Descriptions?</h2>
+
+        <table>
+            <tr><th>Feature</th><th>Cloud AI (GPT-4, Claude)</th><th>Self-Hosted (n8n + Ollama)</th></tr>
+            <tr><td>Cost per description</td><td>$0.01&ndash;0.05</td><td>$0 (your hardware)</td></tr>
+            <tr><td>1,000 descriptions</td><td>$10&ndash;50</td><td>$0</td></tr>
+            <tr><td>50,000 descriptions</td><td>$500&ndash;2,500</td><td>$0</td></tr>
+            <tr><td>Data privacy</td><td>Product data sent externally</td><td>Never leaves your server</td></tr>
+            <tr><td>Rate limits</td><td>Yes (tokens/min, requests/min)</td><td>No limits</td></tr>
+            <tr><td>Quality</td><td>Excellent</td><td>Very good (7B&ndash;14B models)</td></tr>
+            <tr><td>Speed</td><td>2&ndash;5s per description</td><td>3&ndash;8s per description (CPU), 1&ndash;3s (GPU)</td></tr>
+        </table>
+
+        <div class="highlight">
+            <strong>The math is simple:</strong> If you have 5,000 products and refresh descriptions quarterly, that's 20,000 descriptions per year. At $0.03 each with cloud AI, that's $600/year. With Ollama, it's $0 &mdash; forever. For large catalogs, the savings compound fast.
+        </div>
+
+        <h2>Prerequisites</h2>
+        <ul>
+            <li><strong>n8n</strong> &mdash; self-hosted instance (Docker or npm)</li>
+            <li><strong>Ollama</strong> &mdash; running locally with <code>mistral:7b</code> (fast) or <code>qwen2.5:14b</code> (higher quality)</li>
+            <li><strong>Product data source</strong> &mdash; Google Sheets, CSV, Shopify API, WooCommerce API, or any database</li>
+            <li><strong>~4GB RAM</strong> for 7B model, ~8GB for 14B</li>
+        </ul>
+
+        <h2>Architecture Overview</h2>
+
+        <pre><code>Product Data Source (Sheets / Shopify / DB)
+    &darr;
+[Read Products] &mdash; Fetch product name, category, features, specs
+    &darr;
+[Enrich Data] &mdash; Add category-specific keywords, competitor context
+    &darr;
+[Generate Description] &mdash; Ollama generates SEO-optimized copy
+    &darr;
+[Generate Variants] &mdash; Short desc, bullet points, meta description
+    &darr;
+[Quality Check] &mdash; Verify length, keywords, formatting
+    &darr;
+[Output] &mdash; Write to spreadsheet, update store via API, or export CSV</code></pre>
+
+        <h2>Step-by-Step Build</h2>
+
+        <div class="step">
+            <div class="step-number">STEP 1 &mdash; Product Data Input</div>
+            <h3>Read products from your data source</h3>
+            <p>Use a <strong>Google Sheets</strong>, <strong>Spreadsheet File</strong>, or <strong>HTTP Request</strong> node to read your product catalog. Each row should have:</p>
+            <pre><code>{
+  "sku": "WH-BLENDER-PRO",
+  "name": "ProBlend 5000 Countertop Blender",
+  "category": "Kitchen Appliances",
+  "features": ["1500W motor", "64oz BPA-free pitcher", "10 speed settings", "pulse function", "self-cleaning mode"],
+  "price": 89.99,
+  "target_audience": "home cooks, smoothie enthusiasts",
+  "brand": "KitchenElite",
+  "existing_description": ""
+}</code></pre>
+            <p>For <strong>Shopify</strong>, use the HTTP Request node with:</p>
+            <pre><code>GET https://your-store.myshopify.com/admin/api/2024-01/products.json
+Headers: X-Shopify-Access-Token: {{your_token}}</code></pre>
+            <p>For <strong>WooCommerce</strong>:</p>
+            <pre><code>GET https://your-store.com/wp-json/wc/v3/products
+Auth: Basic (consumer_key:consumer_secret)</code></pre>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 2 &mdash; Keyword Enrichment</div>
+            <h3>Add SEO context for each product</h3>
+            <p>Add a <strong>Code</strong> node that maps product categories to target keywords. This ensures every description naturally includes search terms buyers actually use:</p>
+            <pre><code>const categoryKeywords = {
+  "Kitchen Appliances": ["best blender", "countertop blender", "smoothie maker", "kitchen gadget"],
+  "Electronics": ["wireless", "bluetooth", "rechargeable", "portable"],
+  "Clothing": ["comfortable", "breathable", "machine washable", "true to size"],
+  "Home &amp; Garden": ["durable", "easy to assemble", "weather resistant", "space saving"],
+  "Beauty": ["natural ingredients", "dermatologist tested", "cruelty-free", "long lasting"]
+};
+
+const product = $input.item.json;
+const keywords = categoryKeywords[product.category] || [];
+
+return {
+  json: {
+    ...product,
+    seo_keywords: keywords,
+    feature_list: product.features.join(", ")
+  }
+};</code></pre>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 3 &mdash; Generate Main Description</div>
+            <h3>Create SEO-optimized product copy with Ollama</h3>
+            <p>Add an <strong>HTTP Request</strong> node to call Ollama. The prompt engineering is critical here &mdash; it determines the quality and consistency of every description:</p>
+            <pre><code>POST http://localhost:11434/api/generate
+
+{
+  "model": "qwen2.5:14b",
+  "prompt": "You are an expert e-commerce copywriter. Write a compelling product description that sells.\n\nProduct: {{name}}\nCategory: {{category}}\nKey Features: {{feature_list}}\nPrice: ${{price}}\nTarget Audience: {{target_audience}}\nBrand: {{brand}}\n\nSEO Keywords to naturally include: {{seo_keywords}}\n\nRequirements:\n1. Write 150-200 words\n2. Start with a benefit-driven hook (not the product name)\n3. Highlight the top 3 features with concrete benefits\n4. Include at least 2 SEO keywords naturally\n5. End with a subtle call-to-action\n6. Use active voice and sensory language\n7. Do NOT use cliches like 'game-changer', 'revolutionary', or 'take X to the next level'\n8. Write in a warm, confident tone\n\nWrite ONLY the description, no headers or labels.",
+  "stream": false,
+  "options": {
+    "temperature": 0.7,
+    "num_predict": 400
+  }
+}</code></pre>
+            <p><code>temperature: 0.7</code> gives creative variety while keeping output coherent. Higher values (0.9+) risk rambling; lower values (0.3) make descriptions sound robotic and repetitive across products.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 4 &mdash; Generate Variants</div>
+            <h3>Create multiple description formats</h3>
+            <p>Most e-commerce platforms need descriptions in multiple formats. Add a second Ollama call to generate variants from the main description:</p>
+            <pre><code>{
+  "model": "mistral:7b",
+  "prompt": "Based on this product description, create 3 variants:\n\nOriginal:\n{{main_description}}\n\nProduct: {{name}}\nFeatures: {{feature_list}}\n\nGenerate:\n1. SHORT (50 words max) - punchy summary for product cards/listings\n2. BULLETS (5 bullet points) - key selling points, each starting with a benefit\n3. META (155 characters max) - SEO meta description for search results\n\nFormat your response as JSON:\n{\"short\": \"...\", \"bullets\": [\"...\", \"...\"], \"meta\": \"...\"}",
+  "stream": false,
+  "options": {
+    "temperature": 0.5,
+    "num_predict": 500
+  }
+}</code></pre>
+            <p>Using the faster <code>mistral:7b</code> for variants is a good tradeoff &mdash; the main description already sets the quality bar, and the variants just need to be accurate reformattings.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 5 &mdash; Quality Validation</div>
+            <h3>Automated quality checks</h3>
+            <p>Add a <strong>Code</strong> node that validates every description before it reaches your store:</p>
+            <pre><code>const desc = $input.item.json;
+const main = desc.main_description;
+const issues = [];
+
+// Length check
+const wordCount = main.split(/\s+/).length;
+if (wordCount &lt; 100) issues.push("Too short: " + wordCount + " words");
+if (wordCount &gt; 300) issues.push("Too long: " + wordCount + " words");
+
+// Keyword check
+const keywordsFound = desc.seo_keywords.filter(kw =&gt;
+  main.toLowerCase().includes(kw.toLowerCase())
+);
+if (keywordsFound.length === 0) issues.push("No SEO keywords found");
+
+// Duplicate check (basic)
+const sentences = main.split(/[.!?]+/).filter(s =&gt; s.trim().length &gt; 20);
+const uniqueSentences = new Set(sentences.map(s =&gt; s.trim().toLowerCase()));
+if (uniqueSentences.size &lt; sentences.length * 0.8) {
+  issues.push("Contains repetitive sentences");
+}
+
+// Cliche check
+const cliches = ["game-changer", "revolutionary", "next level", "cutting-edge", "state-of-the-art"];
+const foundCliches = cliches.filter(c =&gt; main.toLowerCase().includes(c));
+if (foundCliches.length &gt; 0) issues.push("Cliches found: " + foundCliches.join(", "));
+
+// Meta description length
+if (desc.meta &amp;&amp; desc.meta.length &gt; 160) {
+  issues.push("Meta description too long: " + desc.meta.length + " chars");
+}
+
+return {
+  json: {
+    ...desc,
+    quality: {
+      passed: issues.length === 0,
+      issues: issues,
+      word_count: wordCount,
+      keywords_found: keywordsFound.length
+    }
+  }
+};</code></pre>
+            <p>Products that fail quality checks get flagged for regeneration or manual review.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 6 &mdash; Output to Store</div>
+            <h3>Update your product listings</h3>
+            <p>For <strong>Shopify</strong>, update the product via API:</p>
+            <pre><code>PUT https://your-store.myshopify.com/admin/api/2024-01/products/{{product_id}}.json
+
+{
+  "product": {
+    "body_html": "{{main_description}}",
+    "metafields_global_description_tag": "{{meta}}"
+  }
+}</code></pre>
+            <p>For <strong>Google Sheets</strong> output (review before publishing), write all variants to a new sheet:</p>
+            <pre><code>| SKU | Name | Main Description | Short | Bullets | Meta | Quality |
+|-----|------|-----------------|-------|---------|------|---------|</code></pre>
+            <p>For <strong>CSV export</strong>, use n8n's Spreadsheet File node to generate a CSV ready for bulk import into any platform.</p>
+        </div>
+
+        <h2>Brand Voice Configuration</h2>
+
+        <p>Consistency is what separates professional product copy from AI slop. Create a brand voice prompt prefix that's prepended to every generation:</p>
+
+        <pre><code>// Store in a Code node or n8n credentials
+const brandVoice = {
+  "luxury": "Write in a sophisticated, aspirational tone. Use sensory language. Emphasize craftsmanship, materials, and exclusivity. Avoid discount language.",
+  "casual": "Write in a friendly, conversational tone. Use contractions. Be relatable and enthusiastic without being pushy. Include light humor where appropriate.",
+  "technical": "Write in a precise, specification-focused tone. Lead with performance data. Include measurements, ratings, and comparisons. Audience is knowledgeable.",
+  "eco": "Emphasize sustainability, materials sourcing, and environmental impact. Mention certifications. Tone is earnest and transparent, not preachy."
+};
+
+const voice = brandVoice[$input.item.json.brand_voice || "casual"];</code></pre>
+
+        <div class="highlight">
+            <strong>Pro tip:</strong> Include 2&ndash;3 example descriptions in your prompt as few-shot examples. This dramatically improves consistency. Copy your best-performing existing descriptions (those with highest conversion rates) and use them as the template for AI to follow.
+        </div>
+
+        <h2>Handling Large Catalogs</h2>
+
+        <h3>Batch processing</h3>
+        <p>For catalogs with thousands of products, use n8n's <strong>Split In Batches</strong> node to process 10&ndash;50 products at a time. Add a <strong>Wait</strong> node between batches if running on CPU to prevent memory pressure:</p>
+        <pre><code>Split In Batches (size: 20)
+    &darr;
+[Generate Description] &mdash; Ollama call
+    &darr;
+[Wait 2s] &mdash; Let GPU/CPU cool down (optional, for large batches)
+    &darr;
+Loop back to next batch</code></pre>
+
+        <h3>Incremental updates</h3>
+        <p>Don't regenerate every description on every run. Add a check for products that already have descriptions:</p>
+        <pre><code>// Only process products without descriptions or flagged for refresh
+const needsDescription = $input.item.json.existing_description === ""
+  || $input.item.json.refresh_flag === true;
+
+if (!needsDescription) {
+  return []; // Skip this product
+}
+return [$input.item];</code></pre>
+
+        <h3>Performance benchmarks</h3>
+        <table>
+            <tr><th>Hardware</th><th>Model</th><th>Descriptions/hour</th></tr>
+            <tr><td>CPU only (8-core)</td><td>mistral:7b</td><td>~200&ndash;400</td></tr>
+            <tr><td>CPU only (8-core)</td><td>qwen2.5:14b</td><td>~80&ndash;150</td></tr>
+            <tr><td>RTX 3060 (12GB)</td><td>mistral:7b</td><td>~800&ndash;1,200</td></tr>
+            <tr><td>RTX 3060 (12GB)</td><td>qwen2.5:14b</td><td>~400&ndash;600</td></tr>
+            <tr><td>RTX 4090 (24GB)</td><td>qwen2.5:14b</td><td>~1,000&ndash;1,500</td></tr>
+        </table>
+        <p>Even on CPU, you can regenerate a 5,000-product catalog overnight with <code>mistral:7b</code>.</p>
+
+        <h2>SEO Optimization Tips</h2>
+
+        <ul>
+            <li><strong>Unique descriptions for every product</strong> &mdash; Duplicate content hurts rankings. Set <code>temperature: 0.7</code> and include product-specific details in the prompt to ensure uniqueness.</li>
+            <li><strong>Front-load keywords</strong> &mdash; Tell the model to include the primary keyword in the first sentence. Google weighs early text more heavily.</li>
+            <li><strong>Natural keyword density</strong> &mdash; Aim for 1&ndash;2% keyword density. The quality check node can verify this automatically.</li>
+            <li><strong>Structured data</strong> &mdash; Use the generated descriptions with Schema.org Product markup for rich snippets in search results.</li>
+            <li><strong>A/B test descriptions</strong> &mdash; Generate 2 variants per product, run both for a week, keep the one with higher conversion rate. Automate this with n8n.</li>
+        </ul>
+
+        <h2>Multilingual Descriptions</h2>
+
+        <p>Selling internationally? Add a translation step after generating the English description:</p>
+
+        <pre><code>{
+  "model": "qwen2.5:14b",
+  "prompt": "Translate this product description to {{target_language}}. Maintain the marketing tone, adapt idioms naturally, and keep SEO keywords in the target language. Do NOT translate brand names or model numbers.\n\nOriginal:\n{{main_description}}\n\nTranslated:",
+  "stream": false,
+  "options": { "temperature": 0.3 }
+}</code></pre>
+
+        <p><code>qwen2.5</code> models are particularly strong at multilingual tasks, supporting 20+ languages with good quality. For European e-commerce, this single workflow can generate descriptions in English, German, French, Spanish, and Italian simultaneously.</p>
+
+        <h2>Common Use Cases</h2>
+
+        <ul>
+            <li><strong>Shopify store owners</strong> &mdash; Bulk-generate descriptions for new product launches</li>
+            <li><strong>Dropshipping</strong> &mdash; Rewrite supplier descriptions to be unique and SEO-friendly</li>
+            <li><strong>Amazon/eBay sellers</strong> &mdash; Create optimized listings for marketplace search</li>
+            <li><strong>WooCommerce sites</strong> &mdash; Refresh stale descriptions to improve organic traffic</li>
+            <li><strong>Product data agencies</strong> &mdash; Generate descriptions at scale for multiple clients</li>
+            <li><strong>Seasonal updates</strong> &mdash; Auto-update descriptions for holiday promotions, sales events</li>
+            <li><strong>B2B catalogs</strong> &mdash; Generate technical product specifications from raw data sheets</li>
+        </ul>
+
+        <div class="cta">
+            <h3>Want the complete workflow + 10 more AI templates?</h3>
+            <p>Get the full Self-Hosted AI Workflow Pack for n8n + Ollama. 11 production-ready templates including product descriptions, email automation, lead scoring, and more.</p>
+            <a href="https://buy.stripe.com/28EaEXdSJ1I67WbaivabK0c" class="btn">Get the Pack &mdash; $39</a>
+        </div>
+
+        <h2>Summary</h2>
+
+        <p>Product description generation is one of the highest-ROI applications of local AI for e-commerce. The cost savings are immediate and scale linearly: whether you have 100 products or 100,000, the per-description cost with Ollama is zero. The workflow handles the complete pipeline from raw product data to store-ready copy with quality validation built in.</p>
+
+        <p>Start with your worst-performing product listings &mdash; the ones with thin or duplicate descriptions that aren't ranking in search. Generate new descriptions, monitor the impact on organic traffic and conversion rates, then roll out to your full catalog. The brand voice configuration ensures consistency, and the quality checks catch issues before anything goes live.</p>
+
+        <p>For stores refreshing descriptions quarterly, this workflow saves dozens of hours of copywriting work every cycle &mdash; and the descriptions are available in minutes, not days.</p>
+
+    </article>
+
+    <footer>
+        <p>&copy; 2026 <a href="https://bonskari.github.io/n8n-ai-workflows/">Workflow Forge</a>. All rights reserved.</p>
+        <p><a href="https://bonskari.github.io/n8n-ai-workflows/">Home</a> &middot; <a href="https://bonskari.github.io/n8n-ai-workflows/blog/">Blog</a></p>
+    </footer>
+</div>
+</body>
+</html>
