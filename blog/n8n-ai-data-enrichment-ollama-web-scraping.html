@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automate Data Enrichment with n8n + Ollama (AI-Powered Web Scraping Pipeline)</title>
+    <meta name="description" content="Build an AI-powered data enrichment pipeline with n8n and Ollama. Scrape websites, extract structured company and contact data with local AI, and push enriched leads to Google Sheets or Airtable. Free workflow template included.">
+    <meta property="og:title" content="n8n Data Enrichment with Ollama — AI Web Scraping Pipeline (Free Template)">
+    <meta property="og:description" content="Automate lead enrichment with n8n and Ollama. Scrape public company data, extract structured info with AI, and output to Google Sheets. Self-hosted, zero API costs.">
+    <meta property="og:type" content="article">
+    <link rel="canonical" href="https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-data-enrichment-ollama-web-scraping.html">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Automate Data Enrichment with n8n + Ollama (AI-Powered Web Scraping Pipeline)",
+        "description": "Build an AI-powered data enrichment pipeline with n8n and Ollama. Scrape websites, extract structured company data with local AI. Free workflow template included.",
+        "author": {"@type": "Organization", "name": "Workflow Forge"},
+        "datePublished": "2026-03-24",
+        "publisher": {"@type": "Organization", "name": "Workflow Forge"}
+    }
+    </script>
+    <style>
+        :root { --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff; --green: #3fb950; --orange: #d29922; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+        .container { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem; }
+        nav { padding: 1rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+        nav a { color: var(--accent); text-decoration: none; }
+        h1 { font-size: 2.2rem; margin-bottom: 1rem; line-height: 1.3; }
+        h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; color: var(--accent); }
+        h3 { font-size: 1.2rem; margin: 1.5rem 0 0.75rem; }
+        p { margin-bottom: 1rem; }
+        .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+        pre { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin: 1rem 0 1.5rem; overflow-x: auto; font-size: 0.88rem; line-height: 1.5; }
+        code { font-family: 'SF Mono', 'Fira Code', monospace; }
+        p code, li code { background: var(--surface); border: 1px solid var(--border); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.88em; }
+        ul, ol { margin: 0 0 1rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .cta { background: linear-gradient(135deg, #1a3a5c, #1a2d4a); border: 1px solid var(--accent); border-radius: 12px; padding: 2rem; margin: 2rem 0; text-align: center; }
+        .cta h3 { color: var(--accent); margin-top: 0; }
+        .cta a.btn { display: inline-block; background: var(--accent); color: #000; padding: 0.75rem 2rem; border-radius: 8px; font-weight: bold; text-decoration: none; margin-top: 1rem; }
+        .cta a.btn:hover { opacity: 0.9; text-decoration: none; }
+        .highlight { background: var(--surface); border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; }
+        th, td { border: 1px solid var(--border); padding: 0.75rem; text-align: left; }
+        th { background: var(--surface); }
+        .step { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+        .step-number { color: var(--accent); font-size: 0.9rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .json-toggle { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin: 1.5rem 0; }
+        .json-toggle summary { cursor: pointer; padding: 1rem 1.25rem; font-weight: 600; color: var(--accent); }
+        .json-toggle summary:hover { background: rgba(88,166,255,0.05); }
+        .json-toggle pre { margin: 0; border: none; border-top: 1px solid var(--border); border-radius: 0 0 8px 8px; max-height: 500px; overflow-y: auto; }
+        footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+        @media (max-width: 600px) { h1 { font-size: 1.6rem; } .cta { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav><a href="https://bonskari.github.io/n8n-ai-workflows/">&larr; n8n AI Workflow Templates</a> &middot; <a href="https://bonskari.github.io/n8n-ai-workflows/blog/">Blog</a></nav>
+
+    <article>
+        <h1>Automate Data Enrichment with n8n + Ollama (AI-Powered Web Scraping Pipeline)</h1>
+        <p class="meta">Published March 24, 2026 &middot; 16 min read</p>
+
+        <p>Data enrichment tools like Clearbit, ZoomInfo, and Apollo charge $100&ndash;500/month for a simple premise: take a company name or domain, look up public information, and return structured data. For sales teams doing outreach, this is table stakes. But paying per-record fees for data that is already publicly available on company websites, LinkedIn profiles, and press releases feels increasingly unnecessary.</p>
+
+        <p>With n8n and Ollama, you can build a self-hosted data enrichment pipeline that scrapes public web pages, feeds raw HTML through a local AI model to extract structured information, and pushes clean, enriched records into Google Sheets, Airtable, or your CRM. No API keys for third-party enrichment services, no per-record costs, and no sending your prospect lists to external servers.</p>
+
+        <p>In this guide, you will build a complete n8n data enrichment workflow that:</p>
+        <ol>
+            <li>Accepts a list of company domains or contact names via webhook or spreadsheet</li>
+            <li>Scrapes public web pages (company sites, about pages, blog posts)</li>
+            <li>Passes raw page content through Ollama to extract structured fields</li>
+            <li>Validates and normalizes the extracted data</li>
+            <li>Writes enriched records to Google Sheets or Airtable</li>
+        </ol>
+
+        <h2>What Is AI-Powered Data Enrichment?</h2>
+
+        <p>Traditional data enrichment relies on pre-built databases. Clearbit maintains a database of company profiles and matches your input against it. The problem: their data goes stale, coverage gaps exist for smaller companies, and you pay whether the match is good or not.</p>
+
+        <p>AI-powered enrichment takes a different approach. Instead of looking up records in a database, it reads the actual source material &mdash; company websites, public profiles, press releases &mdash; and extracts structured information in real time. The AI model acts as an intelligent parser that understands context, handles varied page layouts, and returns consistent structured output regardless of how the source data is formatted.</p>
+
+        <p>This matters for three reasons:</p>
+        <ul>
+            <li><strong>Freshness:</strong> You are reading the live website, not a cached record from months ago</li>
+            <li><strong>Coverage:</strong> Any company with a website can be enriched, not just those in a vendor's database</li>
+            <li><strong>Flexibility:</strong> You define the fields you want extracted &mdash; change the prompt, change the output</li>
+        </ul>
+
+        <table>
+            <tr><th></th><th>Traditional Enrichment (Clearbit, ZoomInfo)</th><th>AI Enrichment (n8n + Ollama)</th></tr>
+            <tr><td>Cost</td><td>$100&ndash;500/month + per-record fees</td><td>$0 (self-hosted)</td></tr>
+            <tr><td>Data freshness</td><td>Days to weeks old</td><td>Real-time (scraped live)</td></tr>
+            <tr><td>Coverage</td><td>Limited to vendor's database</td><td>Any public website</td></tr>
+            <tr><td>Custom fields</td><td>Fixed schema</td><td>Define any fields via prompt</td></tr>
+            <tr><td>Data privacy</td><td>Prospect list sent to vendor</td><td>Stays on your server</td></tr>
+            <tr><td>Rate limits</td><td>Strict API quotas</td><td>Limited only by your hardware</td></tr>
+        </table>
+
+        <div class="highlight">
+            <p><strong>When to use which:</strong> AI enrichment works best for enriching 50&ndash;5,000 records where you need custom fields or operate in a niche market. For enriching 100,000+ records with standard firmographic data, a traditional vendor may still be faster. The two approaches also work well together &mdash; use Clearbit for basic fields, then run AI enrichment to fill gaps.</p>
+        </div>
+
+        <h2>The Architecture</h2>
+
+        <p>The pipeline has five stages: trigger, scrape, extract, validate, and output. n8n orchestrates the entire flow, Ollama handles the intelligent extraction, and the HTTP Request node does the web scraping.</p>
+
+        <pre><code>[Webhook / Google Sheets Trigger]
+           &darr;
+    [Loop Over Records]
+           &darr;
+    [HTTP Request &mdash; Scrape Website]
+           &darr;
+    [HTML to Text Conversion]
+           &darr;
+    [Ollama &mdash; Extract Structured Data]
+           &darr;
+    [JSON Parse &amp; Validate]
+           &darr;
+    [Google Sheets / Airtable &mdash; Write Enriched Data]</code></pre>
+
+        <p>Each record flows through independently, so failures on one URL do not block the rest. The workflow includes error handling to skip unreachable websites and flag records that could not be enriched.</p>
+
+        <h2>Step 1: Set Up the Input Trigger</h2>
+
+        <p>You need a way to feed company domains into the workflow. Two common approaches:</p>
+
+        <h3>Option A: Webhook Trigger (for on-demand enrichment)</h3>
+
+        <p>Add a Webhook node that accepts a JSON array of domains:</p>
+
+        <pre><code>// Webhook configuration
+// Method: POST
+// Path: /enrich-companies
+// Authentication: Header Auth (recommended)
+//
+// Expected payload:
+{
+  "companies": [
+    {"domain": "stripe.com", "name": "Stripe"},
+    {"domain": "linear.app", "name": "Linear"},
+    {"domain": "posthog.com", "name": "PostHog"}
+  ]
+}</code></pre>
+
+        <h3>Option B: Google Sheets Trigger (for batch enrichment)</h3>
+
+        <p>Use a Google Sheets Trigger node that watches for new rows in a spreadsheet. Set up a sheet with columns: <code>Domain</code>, <code>Company Name</code>, <code>Status</code>. When you paste new domains into the sheet, the workflow triggers automatically.</p>
+
+        <pre><code>// Google Sheets Trigger configuration
+// Spreadsheet: "Lead Enrichment Pipeline"
+// Sheet: "Input"
+// Trigger on: "Row Added"
+// Poll interval: Every 1 minute
+//
+// After the trigger, add a Filter node:
+// Condition: {{ $json.Status }} is empty
+// (Skip rows that have already been processed)</code></pre>
+
+        <p>After the trigger, add a <strong>Split In Batches</strong> node to process records one at a time. This prevents overloading your Ollama instance with parallel requests and keeps web scraping at a polite pace.</p>
+
+        <pre><code>// Split In Batches configuration
+// Batch Size: 1
+// Options &rarr; Reset: false
+//
+// Add a Wait node after each batch iteration:
+// Wait time: 2 seconds
+// (Be polite to target websites &mdash; do not hammer them)</code></pre>
+
+        <h2>Step 2: Scrape the Company Website</h2>
+
+        <p>Use the HTTP Request node to fetch the company's homepage and about page. These two pages contain 80% of the information you need for lead enrichment.</p>
+
+        <pre><code>// HTTP Request Node &mdash; Fetch Homepage
+// Method: GET
+// URL: https://{{ $json.domain }}
+// Options:
+//   Timeout: 10000 (10 seconds)
+//   Follow Redirects: true
+//   Full Response: true (to capture status code)
+//   Response Format: String (raw HTML)
+//
+// On Error: Continue (do not stop the workflow)
+// Add header: User-Agent: Mozilla/5.0 (compatible; DataBot/1.0)</code></pre>
+
+        <p>After fetching the homepage, add a second HTTP Request node for the about page:</p>
+
+        <pre><code>// HTTP Request Node &mdash; Fetch About Page
+// Method: GET
+// URL: https://{{ $json.domain }}/about
+// Same options as above
+// On Error: Continue (about page may not exist)</code></pre>
+
+        <h3>HTML to Text Conversion</h3>
+
+        <p>Raw HTML is full of tags, scripts, and CSS that waste Ollama's context window. Use a Function node to strip it down to plain text:</p>
+
+        <pre><code>// Function Node: Clean HTML to Text
+const html = $json.data || $json.body || '';
+
+// Remove script and style blocks entirely
+let text = html
+  .replace(/&lt;script[\s\S]*?&lt;\/script&gt;/gi, '')
+  .replace(/&lt;style[\s\S]*?&lt;\/style&gt;/gi, '')
+  .replace(/&lt;nav[\s\S]*?&lt;\/nav&gt;/gi, '')
+  .replace(/&lt;footer[\s\S]*?&lt;\/footer&gt;/gi, '')
+  .replace(/&lt;header[\s\S]*?&lt;\/header&gt;/gi, '');
+
+// Replace HTML tags with spaces
+text = text.replace(/&lt;[^&gt;]+&gt;/g, ' ');
+
+// Decode HTML entities
+text = text
+  .replace(/&amp;amp;/g, '&amp;')
+  .replace(/&amp;nbsp;/g, ' ')
+  .replace(/&amp;lt;/g, '&lt;')
+  .replace(/&amp;gt;/g, '&gt;')
+  .replace(/&amp;quot;/g, '"');
+
+// Collapse whitespace
+text = text.replace(/\s+/g, ' ').trim();
+
+// Truncate to ~4000 chars to fit Ollama's context window efficiently
+text = text.substring(0, 4000);
+
+return [{ json: { ...($input.first().json), pageText: text } }];</code></pre>
+
+        <div class="highlight">
+            <p><strong>Why strip HTML aggressively?</strong> An average company homepage is 50&ndash;150KB of raw HTML, but only 2&ndash;5KB of actual useful text. Sending raw HTML to Ollama wastes tokens on navigation links, JavaScript, and CSS classes. The cleaning function above reduces input size by 90%+ and improves extraction accuracy because the model focuses on actual content.</p>
+        </div>
+
+        <h2>Step 3: Extract Structured Data with Ollama</h2>
+
+        <p>This is where the AI does the heavy lifting. Connect an Ollama node (or an HTTP Request to the Ollama API) and give it a carefully crafted extraction prompt.</p>
+
+        <pre><code>// Ollama HTTP API Request
+// Method: POST
+// URL: http://localhost:11434/api/generate
+// Body (JSON):
+{
+  "model": "llama3.1:8b",
+  "prompt": "You are a data extraction assistant. Analyze the following company webpage text and extract structured information. Return ONLY a valid JSON object with these fields. If a field cannot be determined from the text, use null.\n\nFields to extract:\n- company_name: Official company name\n- tagline: Company tagline or one-line description\n- industry: Primary industry (e.g., SaaS, Fintech, Healthcare, E-commerce)\n- business_model: B2B, B2C, or B2B2C\n- employee_count_range: Estimated range (e.g., 1-10, 11-50, 51-200, 201-500, 500+)\n- founding_year: Year founded\n- headquarters: City, Country\n- key_products: Array of main products or services (max 3)\n- tech_stack_signals: Array of technologies mentioned on the page (max 5)\n- pricing_model: free, freemium, paid, enterprise, or null\n- target_customer: Who the product is for (1 sentence)\n- recent_news: Any recent announcements, funding rounds, or milestones\n\nWebpage text:\n---\n{{ $json.pageText }}\n---\n\nReturn ONLY the JSON object, no explanations or markdown.",
+  "stream": false,
+  "options": {
+    "temperature": 0.1,
+    "num_predict": 1000
+  }
+}</code></pre>
+
+        <p>The low temperature (0.1) is critical for extraction tasks. You want deterministic, factual output &mdash; not creative interpretation. The <code>num_predict</code> limit prevents the model from rambling past the JSON.</p>
+
+        <h3>The Extraction Prompt Explained</h3>
+
+        <p>The prompt above is designed for reliability:</p>
+        <ul>
+            <li><strong>Role assignment</strong> ("data extraction assistant") primes the model for structured output</li>
+            <li><strong>Explicit field definitions</strong> with examples reduce ambiguity</li>
+            <li><strong>Null handling</strong> ("use null") prevents hallucination &mdash; the model won't invent a founding year if it's not on the page</li>
+            <li><strong>"Return ONLY the JSON"</strong> suppresses the model's tendency to add explanations</li>
+        </ul>
+
+        <div class="highlight">
+            <p><strong>Model recommendation:</strong> Use <code>llama3.1:8b</code> for this task. It handles JSON output reliably and processes pages in 3&ndash;8 seconds on a GPU. If you need faster throughput and can accept slightly lower accuracy, <code>mistral:7b</code> is about 30% faster. Avoid models smaller than 7B parameters for extraction &mdash; they struggle with consistent JSON formatting.</p>
+        </div>
+
+        <h2>Step 4: Parse and Validate the Output</h2>
+
+        <p>Ollama's response comes as a text string. You need to parse it into a proper JSON object and handle cases where the model returns malformed output.</p>
+
+        <pre><code>// Function Node: Parse Ollama Response
+const response = $json.response || '';
+
+// Try to extract JSON from the response
+let enrichedData = null;
+
+try {
+  // First attempt: direct parse
+  enrichedData = JSON.parse(response);
+} catch (e) {
+  // Second attempt: find JSON block in response
+  const jsonMatch = response.match(/\{[\s\S]*\}/);
+  if (jsonMatch) {
+    try {
+      enrichedData = JSON.parse(jsonMatch[0]);
+    } catch (e2) {
+      // Extraction failed
+      enrichedData = null;
+    }
+  }
+}
+
+if (!enrichedData) {
+  return [{
+    json: {
+      domain: $('Split In Batches').item.json.domain,
+      enrichment_status: 'failed',
+      error: 'Could not parse Ollama response as JSON'
+    }
+  }];
+}
+
+// Validate key fields
+const validated = {
+  domain: $('Split In Batches').item.json.domain,
+  company_name: enrichedData.company_name || null,
+  tagline: enrichedData.tagline || null,
+  industry: enrichedData.industry || null,
+  business_model: enrichedData.business_model || null,
+  employee_count_range: enrichedData.employee_count_range || null,
+  founding_year: enrichedData.founding_year || null,
+  headquarters: enrichedData.headquarters || null,
+  key_products: Array.isArray(enrichedData.key_products)
+    ? enrichedData.key_products.join(', ') : (enrichedData.key_products || null),
+  tech_stack_signals: Array.isArray(enrichedData.tech_stack_signals)
+    ? enrichedData.tech_stack_signals.join(', ') : (enrichedData.tech_stack_signals || null),
+  pricing_model: enrichedData.pricing_model || null,
+  target_customer: enrichedData.target_customer || null,
+  recent_news: enrichedData.recent_news || null,
+  enrichment_status: 'success',
+  enriched_at: new Date().toISOString()
+};
+
+return [{ json: validated }];</code></pre>
+
+        <p>The dual-parse strategy (try direct parse, then regex extraction) handles the common case where Ollama wraps the JSON in markdown code fences or adds a brief preamble. The validation step ensures arrays are flattened to comma-separated strings for spreadsheet compatibility.</p>
+
+        <h2>Step 5: Write to Google Sheets or Airtable</h2>
+
+        <p>The final step writes enriched records to your output destination.</p>
+
+        <h3>Google Sheets Output</h3>
+
+        <pre><code>// Google Sheets Node Configuration
+// Operation: Append Row
+// Spreadsheet: "Lead Enrichment Pipeline"
+// Sheet: "Enriched"
+// Mapping Mode: Map Each Column
+//
+// Column mappings:
+// Domain         &rarr; {{ $json.domain }}
+// Company Name   &rarr; {{ $json.company_name }}
+// Tagline        &rarr; {{ $json.tagline }}
+// Industry       &rarr; {{ $json.industry }}
+// Business Model &rarr; {{ $json.business_model }}
+// Employee Range &rarr; {{ $json.employee_count_range }}
+// Founded        &rarr; {{ $json.founding_year }}
+// Headquarters   &rarr; {{ $json.headquarters }}
+// Products       &rarr; {{ $json.key_products }}
+// Tech Stack     &rarr; {{ $json.tech_stack_signals }}
+// Pricing        &rarr; {{ $json.pricing_model }}
+// Target Customer&rarr; {{ $json.target_customer }}
+// Recent News    &rarr; {{ $json.recent_news }}
+// Status         &rarr; {{ $json.enrichment_status }}
+// Enriched At    &rarr; {{ $json.enriched_at }}</code></pre>
+
+        <h3>Airtable Output</h3>
+
+        <pre><code>// Airtable Node Configuration
+// Operation: Create Record
+// Base: "Sales Pipeline"
+// Table: "Enriched Companies"
+//
+// Same field mappings as above.
+// Airtable advantage: you can use Single Select fields
+// for Industry and Business Model, which auto-create
+// filter options in the Airtable UI.</code></pre>
+
+        <h2>Practical Use Cases</h2>
+
+        <h3>Lead Scoring and Qualification</h3>
+
+        <p>Feed a list of inbound leads (from a form, webinar registration, or trial signup) through the enrichment pipeline. Use the extracted fields to score leads automatically:</p>
+
+        <pre><code>// Function Node: Simple Lead Scoring
+let score = 0;
+const data = $json;
+
+// Company size scoring
+const sizeScores = { '1-10': 1, '11-50': 2, '51-200': 3, '201-500': 4, '500+': 5 };
+score += sizeScores[data.employee_count_range] || 0;
+
+// Business model fit (assuming you sell B2B)
+if (data.business_model === 'B2B') score += 3;
+if (data.business_model === 'B2B2C') score += 2;
+
+// Industry fit
+const targetIndustries = ['SaaS', 'Fintech', 'E-commerce'];
+if (targetIndustries.includes(data.industry)) score += 3;
+
+// Pricing signals
+if (data.pricing_model === 'enterprise') score += 2;
+
+return [{ json: { ...data, lead_score: score, qualified: score >= 7 } }];</code></pre>
+
+        <h3>Competitor Analysis</h3>
+
+        <p>Modify the extraction prompt to pull competitive intelligence:</p>
+        <ul>
+            <li>What features do they highlight on their homepage?</li>
+            <li>What pricing tier names do they use?</li>
+            <li>Which integrations do they promote?</li>
+            <li>What customer testimonials are featured?</li>
+        </ul>
+
+        <p>Run this weekly on a list of competitor domains and track changes over time in a spreadsheet.</p>
+
+        <h3>Market Research</h3>
+
+        <p>Enrich a list of companies in a target market segment. Pull industry classification, size estimates, and technology signals to build a market map. The <code>tech_stack_signals</code> field is especially useful &mdash; if 60% of companies in your target market mention "Kubernetes" or "AWS," that tells you something about their infrastructure maturity and buying patterns.</p>
+
+        <h2>Handling Edge Cases</h2>
+
+        <h3>Websites That Block Scraping</h3>
+        <p>Some sites return 403 errors or CAPTCHAs. Handle this gracefully:</p>
+        <ul>
+            <li>Check the HTTP status code before processing</li>
+            <li>If 403 or 429, mark the record as <code>enrichment_status: "blocked"</code></li>
+            <li>Add a 2&ndash;5 second delay between requests to avoid rate limits</li>
+            <li>Use a realistic User-Agent header</li>
+        </ul>
+
+        <h3>Non-English Websites</h3>
+        <p><code>llama3.1:8b</code> handles multilingual content reasonably well. The extracted fields will typically be returned in English even if the source is in another language. For better multilingual support, use <code>qwen2.5:7b</code>, which was trained on more diverse language data.</p>
+
+        <h3>Single-Page JavaScript Apps</h3>
+        <p>The HTTP Request node fetches raw HTML. Sites built entirely in React or Vue may return an empty shell. For these, you have two options:</p>
+        <ul>
+            <li>Use n8n's built-in <strong>Puppeteer</strong> or <strong>Playwright</strong> integration (community node) to render JavaScript</li>
+            <li>Scrape the <code>/sitemap.xml</code> or <code>/robots.txt</code> to find statically-rendered pages</li>
+        </ul>
+
+        <h2>Advantages of Self-Hosted Enrichment</h2>
+
+        <p>Running this pipeline on your own infrastructure has concrete benefits beyond cost savings:</p>
+
+        <ul>
+            <li><strong>Data privacy:</strong> Your prospect list never leaves your server. This matters if you are enriching leads before they have opted in to your marketing, or if you operate under GDPR where sharing email lists with third-party vendors requires explicit consent.</li>
+            <li><strong>No per-request API costs:</strong> Clearbit charges $0.05&ndash;0.50 per enrichment. Enriching 5,000 leads costs $250&ndash;2,500. With Ollama, the cost is the electricity to run inference &mdash; roughly $0.002 per record on consumer hardware.</li>
+            <li><strong>Custom extraction schema:</strong> Need to extract "sustainability certifications" or "open-source contributions"? Change the prompt. No waiting for a vendor to add a new field to their API.</li>
+            <li><strong>No rate limits:</strong> Process records as fast as your hardware allows. A single RTX 3060 can handle roughly 10&ndash;15 enrichments per minute with <code>llama3.1:8b</code>.</li>
+        </ul>
+
+        <h2>Complete Workflow JSON</h2>
+
+        <p>Import this into n8n to get the data enrichment pipeline running. You will need to configure your Google Sheets credentials and ensure Ollama is running locally.</p>
+
+        <details class="json-toggle">
+            <summary>Click to expand full workflow JSON</summary>
+            <pre><code>{
+  "name": "AI Data Enrichment (Ollama + Web Scraping)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "enrich-companies",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "enrich-companies"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "split-batches",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://{{ $json.domain }}",
+        "options": {
+          "timeout": 10000,
+          "redirect": { "followRedirects": true },
+          "response": { "response": { "fullResponse": true, "responseFormat": "text" } }
+        },
+        "onError": "continueRegularOutput"
+      },
+      "id": "http-scrape",
+      "name": "Scrape Website",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const html = $json.data || $json.body || '';\nlet text = html.replace(/<script[\\s\\S]*?<\\/script>/gi, '').replace(/<style[\\s\\S]*?<\\/style>/gi, '').replace(/<nav[\\s\\S]*?<\\/nav>/gi, '').replace(/<footer[\\s\\S]*?<\\/footer>/gi, '').replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/\\s+/g, ' ').trim().substring(0, 4000);\nreturn [{ json: { ...$input.first().json, pageText: text } }];"
+      },
+      "id": "clean-html",
+      "name": "Clean HTML",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:11434/api/generate",
+        "method": "POST",
+        "body": {
+          "json": {
+            "model": "llama3.1:8b",
+            "prompt": "You are a data extraction assistant. Analyze the following company webpage text and extract structured information. Return ONLY a valid JSON object with these fields. If a field cannot be determined, use null.\n\nFields: company_name, tagline, industry, business_model (B2B/B2C/B2B2C), employee_count_range, founding_year, headquarters, key_products (array, max 3), tech_stack_signals (array, max 5), pricing_model (free/freemium/paid/enterprise/null), target_customer, recent_news.\n\nWebpage text:\n---\n{{ $json.pageText }}\n---\n\nReturn ONLY the JSON object.",
+            "stream": false,
+            "options": { "temperature": 0.1, "num_predict": 1000 }
+          }
+        },
+        "options": { "timeout": 60000 }
+      },
+      "id": "ollama-extract",
+      "name": "Ollama Extract",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const response = $json.response || '';\nlet data = null;\ntry { data = JSON.parse(response); } catch(e) { const m = response.match(/\\{[\\s\\S]*\\}/); if(m) try { data = JSON.parse(m[0]); } catch(e2) {} }\nif (!data) return [{ json: { domain: $('Split In Batches').item.json.domain, enrichment_status: 'failed' } }];\nconst v = { domain: $('Split In Batches').item.json.domain, company_name: data.company_name||null, tagline: data.tagline||null, industry: data.industry||null, business_model: data.business_model||null, employee_count_range: data.employee_count_range||null, founding_year: data.founding_year||null, headquarters: data.headquarters||null, key_products: Array.isArray(data.key_products)?data.key_products.join(', '):(data.key_products||null), tech_stack_signals: Array.isArray(data.tech_stack_signals)?data.tech_stack_signals.join(', '):(data.tech_stack_signals||null), pricing_model: data.pricing_model||null, target_customer: data.target_customer||null, recent_news: data.recent_news||null, enrichment_status: 'success', enriched_at: new Date().toISOString() };\nreturn [{ json: v }];"
+      },
+      "id": "parse-validate",
+      "name": "Parse and Validate",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "amount": 2,
+        "unit": "seconds"
+      },
+      "id": "wait-node",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1560, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [[{ "node": "Split In Batches", "type": "main", "index": 0 }]]
+    },
+    "Split In Batches": {
+      "main": [
+        [{ "node": "Scrape Website", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Scrape Website": {
+      "main": [[{ "node": "Clean HTML", "type": "main", "index": 0 }]]
+    },
+    "Clean HTML": {
+      "main": [[{ "node": "Ollama Extract", "type": "main", "index": 0 }]]
+    },
+    "Ollama Extract": {
+      "main": [[{ "node": "Parse and Validate", "type": "main", "index": 0 }]]
+    },
+    "Parse and Validate": {
+      "main": [[{ "node": "Wait", "type": "main", "index": 0 }]]
+    },
+    "Wait": {
+      "main": [[{ "node": "Split In Batches", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "AI" }, { "name": "Ollama" }, { "name": "Data Enrichment" }, { "name": "Web Scraping" }, { "name": "Lead Generation" }]
+}</code></pre>
+        </details>
+
+        <p><a href="#">Download workflow JSON file</a></p>
+
+        <h2>Next Steps</h2>
+
+        <p>Once you have the base pipeline running:</p>
+        <ol>
+            <li><strong>Add the about page scraper</strong> &mdash; Fetch both the homepage and <code>/about</code> page, concatenate the text, and feed both into Ollama for richer extraction</li>
+            <li><strong>Connect a Google Sheets output node</strong> &mdash; The workflow JSON above ends at the Parse and Validate step. Add a Google Sheets Append Row node after it to write results automatically</li>
+            <li><strong>Schedule recurring enrichment</strong> &mdash; Use n8n's Cron Trigger to re-enrich records monthly and detect changes (new funding rounds, product launches, hiring surges)</li>
+            <li><strong>Build a lead scoring layer</strong> &mdash; Add a Function node after enrichment that assigns scores based on your ICP criteria</li>
+            <li><strong>Expand to LinkedIn profiles</strong> &mdash; With appropriate compliance measures, scrape public LinkedIn company pages to pull employee count, recent posts, and job openings</li>
+        </ol>
+
+        <p>An AI-powered data enrichment pipeline with n8n and Ollama gives you the flexibility to extract exactly the data you need, from any public source, at zero marginal cost. Start with the workflow above, customize the extraction prompt for your use case, and scale from there.</p>
+
+        <div class="cta">
+            <h3>Want 11 Production-Ready AI Workflows?</h3>
+            <p>The Self-Hosted AI Workflow Pack includes this data enrichment pipeline, plus a chatbot, email automation, document processing, lead scoring, and 7 more n8n + Ollama workflows. One payment, unlimited runs, zero API costs.</p>
+            <a href="https://buy.stripe.com/28EaEXdSJ1I67WbaivabK0c" class="btn">Get the Full Pack &mdash; $39</a>
+        </div>
+
+    </article>
+
+    <footer>
+        <p><a href="https://bonskari.github.io/n8n-ai-workflows/">Back to n8n AI Workflow Templates</a></p>
+        <p>&copy; 2026 Workflow Forge. All rights reserved.</p>
+    </footer>
+</div>
+</body>
+</html>

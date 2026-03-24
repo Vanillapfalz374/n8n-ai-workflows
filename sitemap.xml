@@ -75,4 +75,19 @@
     <lastmod>2026-03-24</lastmod>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-chatbot-ollama-self-hosted.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-sentiment-analysis-ollama-brand-monitoring.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-data-enrichment-ollama-web-scraping.html</loc>
+    <lastmod>2026-03-24</lastmod>
+    <priority>0.8</priority>
+  </url>
 </urlset>
