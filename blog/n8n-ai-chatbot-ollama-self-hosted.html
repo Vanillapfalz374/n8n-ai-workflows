@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build a Self-Hosted AI Chatbot with n8n + Ollama (No API Keys)</title>
+    <meta name="description" content="Build a private AI chatbot with n8n and Ollama. Supports Slack, Telegram, and web chat. Runs 100% locally with zero API costs. Free workflow template included.">
+    <meta property="og:title" content="Self-Hosted AI Chatbot with n8n + Ollama — Free Workflow Template">
+    <meta property="og:description" content="Build a private AI chatbot that runs entirely on your hardware. Integrates with Slack, Telegram, or any web frontend. No API keys needed.">
+    <meta property="og:type" content="article">
+    <link rel="canonical" href="https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-chatbot-ollama-self-hosted.html">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Build a Self-Hosted AI Chatbot with n8n + Ollama (No API Keys)",
+        "description": "Build a private AI chatbot with n8n and Ollama. Free workflow template included.",
+        "author": {"@type": "Organization", "name": "Workflow Forge"},
+        "datePublished": "2026-03-24",
+        "publisher": {"@type": "Organization", "name": "Workflow Forge"}
+    }
+    </script>
+    <style>
+        :root { --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff; --green: #3fb950; --orange: #d29922; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+        .container { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem; }
+        nav { padding: 1rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+        nav a { color: var(--accent); text-decoration: none; }
+        h1 { font-size: 2.2rem; margin-bottom: 1rem; line-height: 1.3; }
+        h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; color: var(--accent); }
+        h3 { font-size: 1.2rem; margin: 1.5rem 0 0.75rem; }
+        p { margin-bottom: 1rem; }
+        .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+        pre { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin: 1rem 0 1.5rem; overflow-x: auto; font-size: 0.88rem; line-height: 1.5; }
+        code { font-family: 'SF Mono', 'Fira Code', monospace; }
+        p code, li code { background: var(--surface); border: 1px solid var(--border); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.88em; }
+        ul, ol { margin: 0 0 1rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .cta { background: linear-gradient(135deg, #1a3a5c, #1a2d4a); border: 1px solid var(--accent); border-radius: 12px; padding: 2rem; margin: 2rem 0; text-align: center; }
+        .cta h3 { color: var(--accent); margin-top: 0; }
+        .cta a.btn { display: inline-block; background: var(--accent); color: #000; padding: 0.75rem 2rem; border-radius: 8px; font-weight: bold; text-decoration: none; margin-top: 1rem; }
+        .cta a.btn:hover { opacity: 0.9; text-decoration: none; }
+        .highlight { background: var(--surface); border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; }
+        th, td { border: 1px solid var(--border); padding: 0.75rem; text-align: left; }
+        th { background: var(--surface); }
+        .step { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+        .step-number { color: var(--accent); font-size: 0.9rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .json-toggle { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin: 1.5rem 0; }
+        .json-toggle summary { cursor: pointer; padding: 1rem 1.25rem; font-weight: 600; color: var(--accent); }
+        .json-toggle summary:hover { background: rgba(88,166,255,0.05); }
+        .json-toggle pre { margin: 0; border: none; border-top: 1px solid var(--border); border-radius: 0 0 8px 8px; max-height: 500px; overflow-y: auto; }
+        footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+        @media (max-width: 600px) { h1 { font-size: 1.6rem; } .cta { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav><a href="https://bonskari.github.io/n8n-ai-workflows/">&larr; n8n AI Workflow Templates</a> &middot; <a href="https://bonskari.github.io/n8n-ai-workflows/blog/">Blog</a></nav>
+
+    <article>
+        <h1>Build a Self-Hosted AI Chatbot with n8n + Ollama (No API Keys)</h1>
+        <p class="meta">Published March 24, 2026 &middot; 14 min read</p>
+
+        <p>Every SaaS chatbot solution &mdash; Intercom, Drift, Zendesk AI &mdash; charges $50&ndash;300/month and sends your customer conversations to third-party servers. For companies handling sensitive data (healthcare, legal, finance), that's a compliance headache. For everyone else, it's an unnecessary recurring cost.</p>
+
+        <p>With n8n and Ollama, you can build a fully private AI chatbot that runs on your own hardware. No API keys, no per-message fees, no data leaving your infrastructure. It handles customer questions, routes complex issues to humans, maintains conversation context, and integrates with Slack, Telegram, or any web frontend.</p>
+
+        <p>In this tutorial, you'll build a chatbot workflow that:</p>
+        <ol>
+            <li>Accepts messages from multiple channels (webhook, Slack, Telegram)</li>
+            <li>Maintains conversation history with session memory</li>
+            <li>Answers questions using a custom knowledge base (RAG)</li>
+            <li>Escalates to a human agent when confidence is low</li>
+            <li>Logs all conversations for analytics</li>
+        </ol>
+
+        <h2>Why Self-Hosted Chatbots Make Sense in 2026</h2>
+
+        <p>The landscape has shifted. Local LLMs like Llama 3, Mistral, and Qwen 2.5 now handle conversational tasks that required GPT-4 two years ago. Here's the comparison:</p>
+
+        <table>
+            <tr><th></th><th>Cloud Chatbot SaaS</th><th>Self-Hosted (n8n + Ollama)</th></tr>
+            <tr><td>Monthly cost</td><td>$50&ndash;300/month</td><td>$0 (runs on existing hardware)</td></tr>
+            <tr><td>Per-message cost</td><td>$0.002&ndash;0.06/message</td><td>$0</td></tr>
+            <tr><td>Data privacy</td><td>Conversations sent to cloud</td><td>100% on your servers</td></tr>
+            <tr><td>GDPR compliance</td><td>Requires DPA with vendor</td><td>Compliant by design</td></tr>
+            <tr><td>Customization</td><td>Limited to vendor's features</td><td>Full control over everything</td></tr>
+            <tr><td>Vendor lock-in</td><td>High (proprietary formats)</td><td>None (open source stack)</td></tr>
+        </table>
+
+        <div class="highlight">
+            <p><strong>When self-hosted works best:</strong> Internal company chatbots (IT helpdesk, HR FAQ), customer support for regulated industries, any use case where conversation data is sensitive. If you're processing 1,000+ concurrent conversations and need sub-100ms latency, a cloud solution may still be more practical.</p>
+        </div>
+
+        <h2>The Architecture</h2>
+
+        <p>The chatbot uses n8n's Chat Trigger for the web interface, with optional Slack/Telegram integrations. Ollama provides the AI brain, and PostgreSQL (or Redis) handles session memory.</p>
+
+        <pre><code>User Message (Web / Slack / Telegram)
+    &darr;
+[Chat Trigger / Webhook] &rarr; [Load Session Memory]
+                                       &darr;
+                              [Build Context Prompt]
+                                       &darr;
+                                [Ollama Chat Model]
+                                       &darr;
+                              [Confidence Check]
+                              /                 \
+                         [High]              [Low]
+                           &darr;                  &darr;
+                   [Send Response]    [Escalate to Human]
+                           &darr;
+                  [Save to Memory]
+                           &darr;
+                  [Log Conversation]</code></pre>
+
+        <h2>Step 1: Set Up the Chat Trigger</h2>
+
+        <p>n8n has a built-in Chat Trigger node that provides a web-based chat widget out of the box. Add one to your canvas:</p>
+
+        <ul>
+            <li>Node: <strong>Chat Trigger</strong></li>
+            <li>Authentication: None (or Basic Auth for internal use)</li>
+            <li>Initial messages: <code>["Hi! I'm your AI assistant. How can I help you today?"]</code></li>
+        </ul>
+
+        <p>This gives you a working chat URL at <code>https://your-n8n.com/webhook/chat</code> that you can embed in any website via iframe or link to directly.</p>
+
+        <h3>Alternative: Slack Integration</h3>
+
+        <p>To receive messages from Slack, use a Webhook node instead:</p>
+
+        <pre><code>// Slack Event Subscription webhook
+// Configure at api.slack.com &rarr; Event Subscriptions
+// Subscribe to: message.channels, message.im
+
+// The webhook receives:
+{
+  "event": {
+    "type": "message",
+    "text": "How do I reset my password?",
+    "user": "U024BE7LH",
+    "channel": "C024BE91L",
+    "ts": "1710000000.000100"
+  }
+}</code></pre>
+
+        <h3>Alternative: Telegram Integration</h3>
+
+        <p>Use n8n's built-in Telegram Trigger node:</p>
+        <ol>
+            <li>Create a bot via <code>@BotFather</code> on Telegram</li>
+            <li>Add the Telegram Trigger node with your bot token</li>
+            <li>Set trigger on: <code>message</code></li>
+        </ol>
+
+        <h2>Step 2: Session Memory with PostgreSQL</h2>
+
+        <p>Chatbots need memory. Without it, every message is treated as a fresh conversation. n8n supports multiple memory backends:</p>
+
+        <pre><code>// Use n8n's built-in Memory Buffer Window node
+// or PostgreSQL Chat Memory for persistence
+
+// PostgreSQL Chat Memory Configuration:
+// Connection: your-postgres-connection
+// Session ID: {{ $json.sessionId || $json.event?.user || 'default' }}
+// Context Window Length: 10  (keeps last 10 messages)
+// Table Name: chatbot_memory</code></pre>
+
+        <div class="highlight">
+            <p><strong>Session ID strategy:</strong> Use the user's unique identifier as the session ID. For Slack it's <code>event.user</code>, for Telegram it's <code>message.chat.id</code>, for web chat it's the browser session cookie. This ensures each user gets their own conversation thread.</p>
+        </div>
+
+        <h2>Step 3: Build the AI Agent with Ollama</h2>
+
+        <p>The core of the chatbot is an AI Agent node connected to Ollama. This gives you tool-calling capabilities, not just text generation.</p>
+
+        <pre><code>// AI Agent Node Configuration
+System Prompt:
+"You are a helpful customer support assistant for [YOUR COMPANY].
+
+Rules:
+- Answer questions based on the knowledge base provided via tools.
+- If you don't know the answer, say so honestly. Do not make up information.
+- Keep responses concise (2-3 sentences for simple questions).
+- For complex issues that require human intervention (billing disputes,
+  account deletion, technical bugs), respond with: ESCALATE: [reason]
+- Be friendly but professional. No emojis unless the user uses them first.
+- If asked about pricing, always refer to the official pricing page.
+
+Company context:
+- Product: [Your product description]
+- Support hours: Monday-Friday 9am-6pm CET
+- Escalation email: support@yourcompany.com"</code></pre>
+
+        <p>Connect the Ollama Chat Model sub-node:</p>
+        <ul>
+            <li>Base URL: <code>http://localhost:11434</code></li>
+            <li>Model: <code>llama3.1:8b</code> (best balance of quality and speed)</li>
+            <li>Temperature: <code>0.3</code> (consistent, factual responses)</li>
+        </ul>
+
+        <h2>Step 4: Add a Knowledge Base (RAG)</h2>
+
+        <p>A chatbot that only uses the LLM's training data will hallucinate about your specific product. Add a Qdrant Vector Store tool so the agent can search your documentation:</p>
+
+        <h3>4a: Ingest Your Documentation</h3>
+
+        <pre><code>// Separate ingestion workflow (run once, then on doc updates)
+//
+// [Manual Trigger] &rarr; [Read Files] &rarr; [Text Splitter] &rarr; [Ollama Embeddings] &rarr; [Qdrant Upsert]
+//
+// Text Splitter settings:
+//   Chunk size: 500 tokens
+//   Chunk overlap: 50 tokens
+//
+// Ollama Embeddings:
+//   Model: nomic-embed-text
+//   Base URL: http://localhost:11434
+//
+// Qdrant:
+//   URL: http://localhost:6333
+//   Collection: company_docs</code></pre>
+
+        <h3>4b: Connect as Agent Tool</h3>
+
+        <pre><code>// Add a "Qdrant Vector Store" tool to the AI Agent
+//
+// Tool name: search_knowledge_base
+// Description: "Search the company knowledge base for product documentation,
+//              FAQs, and support articles. Use this for any product-specific
+//              questions."
+//
+// Qdrant URL: http://localhost:6333
+// Collection: company_docs
+// Embedding model: nomic-embed-text (via Ollama)
+// Top K: 3  (return top 3 most relevant chunks)</code></pre>
+
+        <div class="highlight">
+            <p><strong>Embedding model tip:</strong> Use <code>nomic-embed-text</code> for RAG. It's specifically designed for retrieval tasks and outperforms larger models on search accuracy. At only 274MB, it loads fast and uses minimal memory alongside your chat model.</p>
+        </div>
+
+        <h2>Step 5: Confidence Check and Human Escalation</h2>
+
+        <p>Not every question should be answered by AI. Add a check for low-confidence responses and explicit escalation requests:</p>
+
+        <pre><code>// Function Node: Check Confidence
+const response = $json.output || $json.text || '';
+
+// Check for explicit escalation
+if (response.includes('ESCALATE:')) {
+  const reason = response.split('ESCALATE:')[1]?.trim() || 'Complex issue';
+  return [{
+    json: {
+      action: 'escalate',
+      reason,
+      originalMessage: $('Chat Trigger').item.json.chatInput,
+      sessionId: $('Chat Trigger').item.json.sessionId
+    }
+  }];
+}
+
+// Check for hedging language (low confidence)
+const hedges = ['I\'m not sure', 'I don\'t have', 'I cannot find', 'beyond my knowledge'];
+const isLowConfidence = hedges.some(h =&gt; response.toLowerCase().includes(h.toLowerCase()));
+
+if (isLowConfidence) {
+  return [{
+    json: {
+      action: 'escalate',
+      reason: 'Low confidence response detected',
+      aiResponse: response,
+      originalMessage: $('Chat Trigger').item.json.chatInput
+    }
+  }];
+}
+
+return [{ json: { action: 'respond', response } }];</code></pre>
+
+        <p>For escalation, send a notification to your support team via Slack, email, or a ticketing system:</p>
+
+        <pre><code>// Slack Notification for Escalation
+// Channel: #support-escalations
+// Message:
+"New chatbot escalation:
+*User message:* {{ $json.originalMessage }}
+*Reason:* {{ $json.reason }}
+*Session:* {{ $json.sessionId }}
+*AI attempted response:* {{ $json.aiResponse || 'N/A' }}"</code></pre>
+
+        <h2>Step 6: Conversation Logging</h2>
+
+        <p>Log every conversation for analytics and training data:</p>
+
+        <pre><code>// Function Node: Log Conversation
+const timestamp = new Date().toISOString();
+const logEntry = {
+  timestamp,
+  sessionId: $('Chat Trigger').item.json.sessionId || 'unknown',
+  userMessage: $('Chat Trigger').item.json.chatInput,
+  aiResponse: $json.response || $json.output,
+  wasEscalated: $json.action === 'escalate',
+  model: 'llama3.1:8b'
+};
+
+// Store in PostgreSQL, or append to a file
+return [{ json: logEntry }];</code></pre>
+
+        <h2>Model Selection for Chatbots</h2>
+
+        <p>The model you choose affects response quality, speed, and memory usage:</p>
+
+        <table>
+            <tr><th>Model</th><th>Size</th><th>Response Quality</th><th>Speed</th><th>Best For</th></tr>
+            <tr><td>llama3.1:8b</td><td>4.7 GB</td><td>Excellent</td><td>Fast</td><td>General-purpose chatbot (recommended)</td></tr>
+            <tr><td>mistral:7b</td><td>4.1 GB</td><td>Very good</td><td>Very fast</td><td>Quick responses, simpler conversations</td></tr>
+            <tr><td>qwen2.5:7b</td><td>4.7 GB</td><td>Excellent</td><td>Fast</td><td>Multilingual support, tool calling</td></tr>
+            <tr><td>llama3.1:70b</td><td>40 GB</td><td>Outstanding</td><td>Slow</td><td>Complex reasoning, nuanced responses</td></tr>
+            <tr><td>phi3:3.8b</td><td>2.3 GB</td><td>Good</td><td>Very fast</td><td>Low-resource servers, high throughput</td></tr>
+        </table>
+
+        <div class="highlight">
+            <p><strong>Recommendation:</strong> Start with <code>llama3.1:8b</code>. It handles multi-turn conversations well, follows system prompts reliably, and runs fast on consumer GPUs (RTX 3060+). For servers with only CPU, use <code>phi3:3.8b</code> &mdash; it's surprisingly good for its size and responds in 2&ndash;5 seconds on modern CPUs.</p>
+        </div>
+
+        <h2>Adding a Web Chat Widget</h2>
+
+        <p>n8n's Chat Trigger provides a built-in chat page, but you can also embed it in your website. Add this snippet to any HTML page:</p>
+
+        <pre><code>&lt;!-- Minimal chat widget embedding --&gt;
+&lt;iframe
+  src="https://your-n8n.com/webhook/chat"
+  style="position: fixed; bottom: 20px; right: 20px;
+         width: 400px; height: 600px; border: none;
+         border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+         z-index: 10000;"
+&gt;&lt;/iframe&gt;
+
+&lt;!-- Or use n8n's official chat widget --&gt;
+&lt;link href="https://cdn.jsdelivr.net/npm/@n8n/chat/style.css" rel="stylesheet" /&gt;
+&lt;script type="module"&gt;
+  import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/chat.bundle.es.js';
+  createChat({
+    webhookUrl: 'https://your-n8n.com/webhook/chatbot',
+    initialMessages: ['Hi! How can I help you today?'],
+    theme: { primaryColor: '#4f46e5' }
+  });
+&lt;/script&gt;</code></pre>
+
+        <h2>Production Hardening</h2>
+
+        <h3>Rate Limiting</h3>
+        <p>Prevent abuse by limiting messages per session:</p>
+        <ul>
+            <li>Add a Function node that checks message count per session in the last hour</li>
+            <li>If &gt; 50 messages/hour from one session, return a "slow down" message</li>
+            <li>Block sessions that send &gt; 200 messages/hour entirely</li>
+        </ul>
+
+        <h3>Input Sanitization</h3>
+        <p>Always sanitize user input before passing to the LLM:</p>
+        <ul>
+            <li>Strip HTML tags to prevent XSS in logged conversations</li>
+            <li>Truncate messages to 2000 characters (prevents context window flooding)</li>
+            <li>Filter prompt injection attempts (messages trying to override system prompt)</li>
+        </ul>
+
+        <h3>Monitoring</h3>
+        <ul>
+            <li>Track average response time &mdash; if it exceeds 10 seconds, your Ollama instance may need more resources</li>
+            <li>Monitor escalation rate &mdash; if &gt; 30% of conversations escalate, improve your knowledge base</li>
+            <li>Log token usage per conversation to estimate capacity</li>
+        </ul>
+
+        <h2>Complete Workflow JSON</h2>
+
+        <p>Import this into n8n to get the base chatbot running:</p>
+
+        <details class="json-toggle">
+            <summary>Click to expand full workflow JSON</summary>
+            <pre><code>{
+  "name": "AI Chatbot (Ollama + RAG + Escalation)",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "chat-trigger",
+      "name": "Chat Trigger",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "webhookId": "chatbot"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a helpful customer support assistant. Answer questions using the knowledge base tool when available. If you cannot find the answer or the issue requires human intervention, respond with ESCALATE: followed by the reason. Keep responses concise and professional."
+        }
+      },
+      "id": "ai-agent",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "model": "llama3.1:8b",
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "id": "ollama-chat",
+      "name": "Ollama Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [480, 500]
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "id": "memory",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.2,
+      "position": [640, 500]
+    },
+    {
+      "parameters": {
+        "toolDescription": "Search the company knowledge base for product documentation, FAQs, and support articles. Use this tool for any product-specific questions.",
+        "qdrantCollection": "company_docs",
+        "topK": 3
+      },
+      "id": "qdrant-tool",
+      "name": "Knowledge Base (Qdrant)",
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1,
+      "position": [360, 500]
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text"
+      },
+      "id": "embeddings",
+      "name": "Ollama Embeddings",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [360, 680]
+    }
+  ],
+  "connections": {
+    "Chat Trigger": {
+      "main": [[{ "node": "AI Agent", "type": "main", "index": 0 }]]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [[{ "node": "AI Agent", "type": "ai_languageModel", "index": 0 }]]
+    },
+    "Simple Memory": {
+      "ai_memory": [[{ "node": "AI Agent", "type": "ai_memory", "index": 0 }]]
+    },
+    "Knowledge Base (Qdrant)": {
+      "ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
+    },
+    "Ollama Embeddings": {
+      "ai_embedding": [[{ "node": "Knowledge Base (Qdrant)", "type": "ai_embedding", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "AI" }, { "name": "Ollama" }, { "name": "Chatbot" }, { "name": "RAG" }, { "name": "Customer Support" }]
+}</code></pre>
+        </details>
+
+        <h2>Next Steps</h2>
+
+        <p>Once your base chatbot is running:</p>
+        <ol>
+            <li><strong>Populate the knowledge base</strong> &mdash; Ingest your docs, FAQs, and support articles into Qdrant</li>
+            <li><strong>Add channel integrations</strong> &mdash; Connect Slack and/or Telegram using n8n's built-in nodes</li>
+            <li><strong>Set up escalation routing</strong> &mdash; Connect the escalation path to your ticketing system (Jira, Linear, email)</li>
+            <li><strong>Monitor and improve</strong> &mdash; Review logged conversations weekly. Add common questions to the knowledge base. Fine-tune the system prompt based on real interactions.</li>
+        </ol>
+
+        <p>A self-hosted chatbot with n8n + Ollama gives you full control over your AI assistant &mdash; the conversation data, the model behavior, the integration points, and the cost. Start with the template above and customize it for your specific use case.</p>
+
+        <div class="cta">
+            <h3>Want 11 Production-Ready AI Workflows?</h3>
+            <p>The Self-Hosted AI Workflow Pack includes a chatbot template, email automation, document processing, lead scoring, and 7 more n8n + Ollama workflows. One payment, unlimited runs, zero API costs.</p>
+            <a href="https://bonskari.github.io/n8n-ai-workflows/" class="btn">Get the Full Pack &mdash; $39</a>
+        </div>
+
+    </article>
+
+    <footer>
+        <p>&copy; 2026 Workflow Forge. All rights reserved.</p>
+    </footer>
+</div>
+</body>
+</html>
