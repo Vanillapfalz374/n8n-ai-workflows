@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Build Self-Hosted AI Workflows with n8n + Ollama | Tutorial</title>
+    <meta name="description" content="Step-by-step guide to building AI automation workflows with n8n and Ollama. Free email classifier workflow included. No API keys, no monthly costs.">
+    <meta property="og:title" content="How to Build Self-Hosted AI Workflows with n8n + Ollama">
+    <meta property="og:description" content="Practical tutorial with a free email classifier workflow. Run AI automation locally with zero API costs.">
+    <meta property="og:type" content="article">
+    <link rel="canonical" href="https://bonskari.github.io/n8n-ai-workflows/blog/">
+    <style>
+        :root { --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff; --green: #3fb950; --orange: #d29922; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+        .container { max-width: 780px; margin: 0 auto; padding: 0 1.5rem; }
+
+        /* Header */
+        .header { padding: 2rem 0; border-bottom: 1px solid var(--border); margin-bottom: 3rem; }
+        .header a { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+        .header a:hover { text-decoration: underline; }
+
+        /* Article */
+        article { padding-bottom: 3rem; }
+        article h1 { font-size: 2.2rem; line-height: 1.25; margin-bottom: 1rem; }
+        article .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+        article h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        article h2:first-of-type { border-top: none; padding-top: 0; }
+        article h3 { font-size: 1.2rem; margin: 2rem 0 0.75rem; color: var(--accent); }
+        article h4 { font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+        article p { margin-bottom: 1rem; color: var(--text); }
+        article ul, article ol { margin: 0 0 1rem 1.5rem; }
+        article li { margin-bottom: 0.4rem; }
+        article strong { color: #fff; }
+        article a { color: var(--accent); text-decoration: none; }
+        article a:hover { text-decoration: underline; }
+
+        /* Code blocks */
+        pre { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin: 1rem 0 1.5rem; overflow-x: auto; font-size: 0.88rem; line-height: 1.5; }
+        code { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; color: var(--text); }
+        p code, li code { background: var(--surface); border: 1px solid var(--border); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.88em; }
+
+        /* Info boxes */
+        .info-box { background: var(--surface); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 1.25rem; margin: 1.5rem 0; }
+        .info-box p { margin: 0; color: var(--muted); }
+        .info-box strong { color: var(--text); }
+
+        /* Architecture diagram */
+        .diagram { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; text-align: center; font-family: monospace; font-size: 0.9rem; color: var(--muted); line-height: 1.8; }
+
+        /* Workflow list */
+        .workflow-list { list-style: none; margin: 0; padding: 0; }
+        .workflow-list li { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 0.6rem; }
+        .workflow-list li strong { display: block; color: var(--text); margin-bottom: 0.2rem; }
+        .workflow-list li span { color: var(--muted); font-size: 0.9rem; }
+
+        /* CTA section */
+        .cta-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2.5rem; margin: 2.5rem 0; text-align: center; }
+        .cta-section h3 { color: var(--text); font-size: 1.4rem; margin-bottom: 0.75rem; }
+        .cta-section p { color: var(--muted); margin-bottom: 1.5rem; }
+        .cta-btn { display: inline-block; background: var(--green); color: #000; padding: 0.9rem 2.2rem; border-radius: 8px; font-size: 1.05rem; font-weight: 700; text-decoration: none; transition: all 0.2s; }
+        .cta-btn:hover { background: #4cc963; transform: translateY(-2px); box-shadow: 0 4px 20px rgba(63,185,80,0.3); text-decoration: none; }
+        .cta-note { margin-top: 1rem; color: var(--muted); font-size: 0.85rem; }
+
+        /* Category headers in workflow list */
+        .cat-header { color: var(--accent); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin: 1.5rem 0 0.75rem; font-weight: 600; }
+
+        /* JSON toggle */
+        .json-toggle { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin: 1.5rem 0; }
+        .json-toggle summary { cursor: pointer; padding: 1rem 1.25rem; font-weight: 600; color: var(--accent); }
+        .json-toggle summary:hover { background: rgba(88,166,255,0.05); }
+        .json-toggle pre { margin: 0; border: none; border-top: 1px solid var(--border); border-radius: 0 0 8px 8px; max-height: 500px; overflow-y: auto; }
+
+        footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 2rem; }
+
+        @media (max-width: 600px) {
+            article h1 { font-size: 1.6rem; }
+            .cta-section { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="https://bonskari.github.io/n8n-ai-workflows/">&larr; Back to Self-Hosted AI Workflow Pack</a>
+        </div>
+
+        <article>
+            <h1>How to Build Self-Hosted AI Workflows with n8n + Ollama</h1>
+            <p class="meta">A practical guide to running AI automation on your own hardware &mdash; no API keys, no monthly bills, no data leaving your machine. Includes a free, complete email classifier workflow.</p>
+
+            <h2>Why Self-Hosted AI Matters</h2>
+            <p>Every time you send data to OpenAI, Anthropic, or Google's APIs, three things happen:</p>
+            <ol>
+                <li><strong>Your data leaves your control.</strong> Customer emails, internal documents, support tickets &mdash; all sent to third-party servers.</li>
+                <li><strong>You pay per token.</strong> A single workflow processing 100 emails/day can cost $50&ndash;200/month on GPT-4.</li>
+                <li><strong>You depend on uptime you don't control.</strong> Rate limits, outages, and API deprecations can break your automation without warning.</li>
+            </ol>
+
+            <p>Self-hosted AI with Ollama eliminates all three problems:</p>
+            <ul>
+                <li><strong>Privacy:</strong> Data never leaves your machine. GDPR compliance is the default, not a configuration exercise.</li>
+                <li><strong>Cost:</strong> $0/month after hardware. Run unlimited requests against models like Llama 3, Mistral, or Phi-3.</li>
+                <li><strong>Reliability:</strong> No rate limits, no API keys to rotate, works offline.</li>
+            </ul>
+
+            <div class="info-box">
+                <p><strong>The tradeoff:</strong> Local models are smaller than GPT-4. But for structured tasks like classification, summarization, data extraction, and drafting &mdash; the ones you actually want to automate &mdash; a well-prompted 8B parameter model running locally is more than sufficient.</p>
+            </div>
+
+            <h2>How n8n + Ollama Work Together</h2>
+            <p><a href="https://n8n.io" rel="noopener">n8n</a> is an open-source workflow automation tool (self-hosted alternative to Zapier). <a href="https://ollama.ai" rel="noopener">Ollama</a> is a local LLM runner that exposes models via a REST API on <code>localhost:11434</code>.</p>
+            <p>The integration is straightforward: n8n's HTTP Request node calls Ollama's <code>/api/generate</code> endpoint. No special plugins needed.</p>
+
+            <div class="diagram">
+                [Trigger] &rarr; [n8n Workflow] &rarr; [HTTP Request to Ollama] &rarr; [Process Response] &rarr; [Output]<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&darr;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;localhost:11434 (Llama 3, etc.)
+            </div>
+
+            <h3>Setup (5 minutes)</h3>
+            <h4>1. Install Ollama</h4>
+            <pre><code>curl -fsSL https://ollama.ai/install.sh | sh
+ollama pull llama3:8b</code></pre>
+
+            <h4>2. Install n8n</h4>
+            <pre><code>docker run -d --name n8n -p 5678:5678 \
+  --add-host=host.docker.internal:host-gateway \
+  -v n8n_data:/home/node/.n8n \
+  n8nio/n8n</code></pre>
+
+            <div class="info-box">
+                <p><strong>Docker note:</strong> The <code>--add-host</code> flag is critical if n8n runs in Docker &mdash; it lets n8n reach Ollama on the host machine. Inside your workflows, use <code>http://host.docker.internal:11434</code> instead of <code>localhost</code>.</p>
+            </div>
+
+            <h4>3. Verify Ollama is reachable</h4>
+            <pre><code>curl http://localhost:11434/api/generate -d '{
+  "model": "llama3:8b",
+  "prompt": "Say hello in one sentence.",
+  "stream": false
+}'</code></pre>
+            <p>You should get a JSON response with a <code>response</code> field. If that works, you're ready.</p>
+
+            <h2>Free Example: Email Classifier Workflow</h2>
+            <p>Here's a complete, working n8n workflow that classifies incoming emails using Ollama. Import the JSON below directly into n8n.</p>
+            <p><strong>What it does:</strong></p>
+            <ol>
+                <li>Checks for unread emails every 5 minutes (IMAP)</li>
+                <li>Sends each email to Ollama for classification (URGENT, QUESTION, FEEDBACK, SPAM, OTHER)</li>
+                <li>Filters out spam</li>
+                <li>Drafts a context-aware reply using Ollama</li>
+                <li>Outputs the draft for your review</li>
+            </ol>
+
+            <h3>The Workflow JSON</h3>
+            <p>Copy this and import via <strong>n8n &gt; Workflows &gt; Import from JSON</strong>:</p>
+
+            <details class="json-toggle">
+                <summary>Click to expand full workflow JSON</summary>
+                <pre><code>{
+  "name": "AI Email Classifier + Auto-Responder (Ollama)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "minutes", "minutesInterval": 5 }]
+        }
+      },
+      "id": "schedule",
+      "name": "Check Every 5 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": false,
+        "limit": 10,
+        "filters": {
+          "readStatus": "unread"
+        }
+      },
+      "id": "get-emails",
+      "name": "Get Unread Emails (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [460, 300],
+      "credentials": {
+        "imap": {
+          "id": "REPLACE_WITH_YOUR_IMAP_CREDENTIAL_ID",
+          "name": "Your IMAP Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3:8b', prompt: 'Classify this email into one of these categories: URGENT, QUESTION, FEEDBACK, SPAM, OTHER.\\n\\nFrom: ' + $json.from + '\\nSubject: ' + $json.subject + '\\nBody: ' + ($json.text || '').substring(0, 1000) + '\\n\\nRespond with ONLY the category name, nothing else.', stream: false, options: { temperature: 0.1, num_predict: 20 } }) }}",
+        "options": { "timeout": 60000 }
+      },
+      "id": "classify",
+      "name": "Classify Email (Ollama)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false },
+          "combinator": "or",
+          "conditions": [
+            {
+              "leftValue": "={{ JSON.parse($json.data).response.trim() }}",
+              "rightValue": "SPAM",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "filter-spam",
+      "name": "Filter Spam",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3:8b', prompt: 'Write a professional, helpful email reply to this message. Be concise and friendly.\\n\\nFrom: ' + $('Get Unread Emails (IMAP)').item.json.from + '\\nSubject: ' + $('Get Unread Emails (IMAP)').item.json.subject + '\\nBody: ' + ($('Get Unread Emails (IMAP)').item.json.text || '').substring(0, 2000) + '\\n\\nWrite ONLY the reply body. Sign off as the team.', stream: false, options: { temperature: 0.5, num_predict: 1000 } }) }}",
+        "options": { "timeout": 120000 }
+      },
+      "id": "draft-reply",
+      "name": "Draft Reply (Ollama)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "draft",
+              "name": "draft_reply",
+              "value": "={{ JSON.parse($json.data).response }}",
+              "type": "string"
+            },
+            {
+              "id": "original_from",
+              "name": "original_from",
+              "value": "={{ $('Get Unread Emails (IMAP)').item.json.from }}",
+              "type": "string"
+            },
+            {
+              "id": "original_subject",
+              "name": "original_subject",
+              "value": "={{ 'Re: ' + $('Get Unread Emails (IMAP)').item.json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "category",
+              "name": "category",
+              "value": "={{ JSON.parse($('Classify Email (Ollama)').item.json.data).response.trim() }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "prepare-output",
+      "name": "Prepare Draft for Review",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "Check Every 5 Minutes": {
+      "main": [[{ "node": "Get Unread Emails (IMAP)", "type": "main", "index": 0 }]]
+    },
+    "Get Unread Emails (IMAP)": {
+      "main": [[{ "node": "Classify Email (Ollama)", "type": "main", "index": 0 }]]
+    },
+    "Classify Email (Ollama)": {
+      "main": [[{ "node": "Filter Spam", "type": "main", "index": 0 }]]
+    },
+    "Filter Spam": {
+      "main": [[{ "node": "Draft Reply (Ollama)", "type": "main", "index": 0 }]]
+    },
+    "Draft Reply (Ollama)": {
+      "main": [[{ "node": "Prepare Draft for Review", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "AI" }, { "name": "Ollama" }, { "name": "Email" }]
+}</code></pre>
+            </details>
+
+            <h3>How to Use It</h3>
+            <ol>
+                <li>Import the JSON into n8n</li>
+                <li>Set up your IMAP credentials (Settings &gt; Credentials &gt; Add IMAP)</li>
+                <li>If n8n runs in Docker, replace <code>localhost</code> with <code>host.docker.internal</code> in the Ollama URLs</li>
+                <li>Activate the workflow</li>
+            </ol>
+
+            <h3>Key Implementation Details</h3>
+            <p><strong>Why <code>temperature: 0.1</code> for classification?</strong> Low temperature makes the model deterministic &mdash; you want consistent category labels, not creative ones. For drafting replies, <code>temperature: 0.5</code> adds enough variation to sound natural.</p>
+            <p><strong>Why <code>num_predict: 20</code> for classification?</strong> The model only needs to output one word (the category). Limiting output tokens prevents rambling and speeds up response time.</p>
+            <p><strong>Why substring the email body?</strong> Ollama models have context windows (typically 4096&ndash;8192 tokens). Truncating to 1000&ndash;2000 characters keeps you safely within limits while capturing the important content.</p>
+            <p><strong>Parsing the response:</strong> Ollama returns <code>{"response": "URGENT", ...}</code>. The workflow uses <code>JSON.parse($json.data).response.trim()</code> to extract the clean category label.</p>
+
+            <h2>What's in the Full Pack</h2>
+            <p>The <strong>Self-Hosted AI Workflow Pack</strong> includes 11 production-ready n8n workflows, all powered by Ollama. Every workflow includes complete JSON, in-workflow documentation via sticky notes, and prompts tuned for reliable structured output.</p>
+
+            <p class="cat-header">Content & Marketing</p>
+            <ul class="workflow-list">
+                <li><strong>1. AI Blog Writer Pipeline</strong> <span>Enter a topic, get a polished 1500-word post. 4-stage pipeline: research, outline, draft, edit.</span></li>
+                <li><strong>2. AI Social Media Content Generator</strong> <span>One topic becomes optimized posts for Twitter, LinkedIn, Reddit, and Instagram.</span></li>
+                <li><strong>3. AI YouTube-to-Newsletter Pipeline</strong> <span>Paste a YouTube URL, get a formatted email newsletter in 60 seconds.</span></li>
+                <li><strong>4. AI Multi-Platform Content Repurposer</strong> <span>Feed in one blog post, get back six platform-optimized versions.</span></li>
+            </ul>
+
+            <p class="cat-header">Sales & Business</p>
+            <ul class="workflow-list">
+                <li><strong>5. AI Lead Scoring & Enrichment</strong> <span>Webhook-triggered. Scores leads 1-100, enriches with AI, auto-routes hot leads.</span></li>
+                <li><strong>6. AI Competitor Intelligence Monitor</strong> <span>Weekly autopilot. Scrapes competitors, AI-analyzes changes, delivers strategic briefings.</span></li>
+                <li><strong>7. AI Email Auto-Responder</strong> <span>Classifies emails, filters junk, drafts context-aware replies. Runs every 5 minutes.</span></li>
+                <li><strong>8. AI Support Ticket Router</strong> <span>Classifies tickets by category/priority, detects sentiment, auto-replies to simple questions.</span></li>
+            </ul>
+
+            <p class="cat-header">Productivity</p>
+            <ul class="workflow-list">
+                <li><strong>9. AI Document Summarizer</strong> <span>Webhook API. Send any document, get a summary and auto-generated Q&amp;A pairs.</span></li>
+                <li><strong>10. AI Meeting Notes Summarizer</strong> <span>Paste transcripts, get structured summaries with action items and follow-up emails.</span></li>
+                <li><strong>11. AI Data Extractor</strong> <span>Extract structured JSON from unstructured text. Define your schema, send text, get clean data.</span></li>
+            </ul>
+
+            <div class="cta-section">
+                <h3>Get All 11 Workflows for $39</h3>
+                <p>One-time purchase. No subscriptions. No API costs. Unlimited runs forever.</p>
+                <a href="https://bonskari.github.io/n8n-ai-workflows/" class="cta-btn">Get the Full Pack &mdash; $39</a>
+                <p class="cta-note">30-day money-back guarantee. Instant download after purchase.</p>
+            </div>
+
+            <h2>Wrapping Up</h2>
+            <p>Self-hosted AI with n8n + Ollama is the practical path for anyone who wants AI automation without vendor lock-in, recurring costs, or data privacy headaches. The email classifier above is a working starting point &mdash; import it, tweak it, and see what local AI can do.</p>
+            <p>If you want to skip the hours of prompt engineering and workflow building, the <a href="https://bonskari.github.io/n8n-ai-workflows/">full pack of 11 templates</a> is ready to import and run.</p>
+        </article>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Workflow Forge. All rights reserved.</p>
+    </footer>
+</body>
+</html>
