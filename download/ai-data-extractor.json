@@ -1,0 +1,126 @@
+{
+  "name": "AI Data Extractor from Unstructured Text (Ollama)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "webhook-1",
+      "name": "Receive Data",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "webhookId": "data-extractor"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "text",
+              "name": "text",
+              "value": "={{ $json.body.text || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "schema",
+              "name": "schema",
+              "value": "={{ $json.body.schema || '{\"name\": \"string\", \"email\": \"string\", \"phone\": \"string\", \"company\": \"string\", \"role\": \"string\"}' }}",
+              "type": "string"
+            },
+            {
+              "id": "context",
+              "name": "context",
+              "value": "={{ $json.body.context || 'Extract structured data from the text' }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "set-1",
+      "name": "Prepare Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3:8b', prompt: `You are a data extraction specialist. Extract structured data from unstructured text.\\n\\nContext: ${$json.context}\\n\\nTarget schema (extract these fields):\\n${$json.schema}\\n\\nText to extract from:\\n${$json.text}\\n\\nRules:\\n1. Return ONLY a valid JSON array of objects matching the schema\\n2. If a field cannot be found, use null\\n3. Extract ALL matching entities (there may be multiple)\\n4. Be precise — only extract what is clearly stated\\n5. Do not invent or hallucinate data\\n\\nReturn ONLY the JSON array, no explanation.`, stream: false, options: { temperature: 0.1, num_predict: 4000 } }) }}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "ollama-1",
+      "name": "Extract Data (Ollama)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json.response;\n\nlet extracted;\ntry {\n  // Find JSON array in response\n  const arrayMatch = response.match(/\\[[\\s\\S]*\\]/);\n  if (arrayMatch) {\n    extracted = JSON.parse(arrayMatch[0]);\n  } else {\n    // Try single object\n    const objMatch = response.match(/\\{[\\s\\S]*\\}/);\n    extracted = objMatch ? [JSON.parse(objMatch[0])] : [];\n  }\n} catch (e) {\n  extracted = [{ raw_response: response, parse_error: e.message }];\n}\n\nreturn [{ json: { extracted_count: extracted.length, data: extracted } }];"
+      },
+      "id": "code-1",
+      "name": "Parse & Validate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3:8b', prompt: `Verify this extracted data for accuracy. Check each field against common sense and flag any suspicious values.\\n\\nExtracted data:\\n${JSON.stringify($json.data)}\\n\\nFor each record, return a JSON object with:\\n- record_index: number\\n- confidence: \"high\", \"medium\", or \"low\"\\n- flags: array of any concerns (empty if none)\\n\\nReturn a JSON array of verification results.`, stream: false, options: { temperature: 0.1 } }) }}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "ollama-2",
+      "name": "Verify Extraction (Ollama)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ extracted_count: $('Parse & Validate').first().json.extracted_count, data: $('Parse & Validate').first().json.data, verification: $json.response }) }}"
+      },
+      "id": "respond-1",
+      "name": "Return Results",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "Receive Data": {
+      "main": [[{"node": "Prepare Input", "type": "main", "index": 0}]]
+    },
+    "Prepare Input": {
+      "main": [[{"node": "Extract Data (Ollama)", "type": "main", "index": 0}]]
+    },
+    "Extract Data (Ollama)": {
+      "main": [[{"node": "Parse & Validate", "type": "main", "index": 0}]]
+    },
+    "Parse & Validate": {
+      "main": [[{"node": "Verify Extraction (Ollama)", "type": "main", "index": 0}]]
+    },
+    "Verify Extraction (Ollama)": {
+      "main": [[{"node": "Return Results", "type": "main", "index": 0}]]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-03-24T00:00:00.000Z",
+  "versionId": "1"
+}

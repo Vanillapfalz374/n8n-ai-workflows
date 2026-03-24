@@ -1,0 +1,126 @@
+{
+  "name": "AI Meeting Notes Summarizer (Ollama)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "webhook-1",
+      "name": "New Meeting Notes",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 300],
+      "webhookId": "meeting-notes-processor"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "transcript",
+              "name": "transcript",
+              "value": "={{ $json.body.transcript || $json.body.notes || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "meeting_title",
+              "name": "meeting_title",
+              "value": "={{ $json.body.title || 'Untitled Meeting' }}",
+              "type": "string"
+            },
+            {
+              "id": "attendees",
+              "name": "attendees",
+              "value": "={{ $json.body.attendees || 'Not specified' }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "id": "set-1",
+      "name": "Prepare Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3:8b', prompt: `Analyze the following meeting transcript and produce a structured summary.\\n\\nMeeting: ${$json.meeting_title}\\nAttendees: ${$json.attendees}\\n\\nTranscript:\\n${$json.transcript}\\n\\nReturn a JSON object with these fields:\\n- summary: 3-5 sentence overview of the meeting\\n- key_decisions: array of decisions made\\n- action_items: array of objects with fields: task, owner, deadline\\n- follow_ups: array of items that need follow-up\\n- topics_discussed: array of main topics\\n\\nReturn ONLY valid JSON, no markdown.`, stream: false, options: { temperature: 0.3 } }) }}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "ollama-1",
+      "name": "Summarize Meeting (Ollama)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json.response;\n\n// Try to parse JSON from Ollama response\nlet parsed;\ntry {\n  const jsonMatch = response.match(/\\{[\\s\\S]*\\}/);\n  parsed = JSON.parse(jsonMatch[0]);\n} catch (e) {\n  parsed = {\n    summary: response,\n    key_decisions: [],\n    action_items: [],\n    follow_ups: [],\n    topics_discussed: []\n  };\n}\n\nreturn [{ json: parsed }];"
+      },
+      "id": "code-1",
+      "name": "Parse Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'llama3:8b', prompt: `Based on these meeting action items, write a brief follow-up email that could be sent to all attendees.\\n\\nMeeting Summary: ${$json.summary}\\n\\nAction Items:\\n${JSON.stringify($json.action_items)}\\n\\nKey Decisions:\\n${JSON.stringify($json.key_decisions)}\\n\\nWrite a professional, concise follow-up email. Include all action items with owners and deadlines. Keep it under 200 words.`, stream: false, options: { temperature: 0.4 } }) }}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "ollama-2",
+      "name": "Draft Follow-Up Email (Ollama)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ summary: $('Parse Summary').first().json.summary, key_decisions: $('Parse Summary').first().json.key_decisions, action_items: $('Parse Summary').first().json.action_items, follow_ups: $('Parse Summary').first().json.follow_ups, topics_discussed: $('Parse Summary').first().json.topics_discussed, follow_up_email: $json.response }) }}"
+      },
+      "id": "respond-1",
+      "name": "Return Results",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "New Meeting Notes": {
+      "main": [[{"node": "Prepare Input", "type": "main", "index": 0}]]
+    },
+    "Prepare Input": {
+      "main": [[{"node": "Summarize Meeting (Ollama)", "type": "main", "index": 0}]]
+    },
+    "Summarize Meeting (Ollama)": {
+      "main": [[{"node": "Parse Summary", "type": "main", "index": 0}]]
+    },
+    "Parse Summary": {
+      "main": [[{"node": "Draft Follow-Up Email (Ollama)", "type": "main", "index": 0}]]
+    },
+    "Draft Follow-Up Email (Ollama)": {
+      "main": [[{"node": "Return Results", "type": "main", "index": 0}]]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-03-24T00:00:00.000Z",
+  "versionId": "1"
+}
