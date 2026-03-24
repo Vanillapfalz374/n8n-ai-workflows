@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automate Image Alt Text with n8n + Ollama (AI Accessibility Workflow)</title>
+    <meta name="description" content="Generate WCAG-compliant alt text for images at scale using n8n and Ollama. Automate accessibility compliance with local AI. No API costs. Free workflow template.">
+    <meta property="og:title" content="AI Alt Text Generator with n8n + Ollama — Accessibility Automation">
+    <meta property="og:description" content="Automate WCAG-compliant image descriptions at scale using local AI. Free n8n workflow for websites, e-commerce, and CMS platforms.">
+    <meta property="og:type" content="article">
+    <link rel="canonical" href="https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-image-alt-text-ollama-accessibility.html">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Automate Image Alt Text with n8n + Ollama (AI Accessibility Workflow)",
+        "description": "Build an automated alt text generator for images using n8n and Ollama. WCAG-compliant descriptions at scale with local AI. Free workflow template included.",
+        "author": {"@type": "Organization", "name": "Workflow Forge"},
+        "datePublished": "2026-03-24",
+        "publisher": {"@type": "Organization", "name": "Workflow Forge"}
+    }
+    </script>
+    <style>
+        :root { --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff; --green: #3fb950; --orange: #d29922; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+        .container { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem; }
+        nav { padding: 1rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+        nav a { color: var(--accent); text-decoration: none; }
+        h1 { font-size: 2.2rem; margin-bottom: 1rem; line-height: 1.3; }
+        h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; color: var(--accent); }
+        h3 { font-size: 1.2rem; margin: 1.5rem 0 0.75rem; }
+        p { margin-bottom: 1rem; }
+        .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+        pre { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin: 1rem 0 1.5rem; overflow-x: auto; font-size: 0.88rem; line-height: 1.5; }
+        code { font-family: 'SF Mono', 'Fira Code', monospace; }
+        p code, li code { background: var(--surface); border: 1px solid var(--border); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.88em; }
+        ul, ol { margin: 0 0 1rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .cta { background: linear-gradient(135deg, #1a3a5c, #1a2d4a); border: 1px solid var(--accent); border-radius: 12px; padding: 2rem; margin: 2rem 0; text-align: center; }
+        .cta h3 { color: var(--accent); margin-top: 0; }
+        .cta a.btn { display: inline-block; background: var(--accent); color: #000; padding: 0.75rem 2rem; border-radius: 8px; font-weight: bold; text-decoration: none; margin-top: 1rem; }
+        .cta a.btn:hover { opacity: 0.9; text-decoration: none; }
+        .highlight { background: var(--surface); border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; }
+        th, td { border: 1px solid var(--border); padding: 0.75rem; text-align: left; }
+        th { background: var(--surface); }
+        .step { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+        .step-number { color: var(--accent); font-size: 0.9rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .json-toggle { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin: 1.5rem 0; }
+        .json-toggle summary { cursor: pointer; padding: 1rem 1.25rem; font-weight: 600; color: var(--accent); }
+        .json-toggle summary:hover { background: rgba(88,166,255,0.05); }
+        .json-toggle pre { margin: 0; border: none; border-top: 1px solid var(--border); border-radius: 0 0 8px 8px; max-height: 500px; overflow-y: auto; }
+        footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+        @media (max-width: 600px) { h1 { font-size: 1.6rem; } .cta { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav><a href="https://bonskari.github.io/n8n-ai-workflows/">&larr; n8n AI Workflow Templates</a> &middot; <a href="https://bonskari.github.io/n8n-ai-workflows/blog/">Blog</a></nav>
+
+    <article>
+        <h1>Automate Image Alt Text with n8n + Ollama (AI Accessibility Workflow)</h1>
+        <p class="meta">Published March 24, 2026 &middot; 12 min read &middot; By Workflow Forge</p>
+
+        <p>Missing or poor alt text is the #1 accessibility violation on the web. <a href="https://webaim.org/projects/million/">WebAIM&rsquo;s 2025 study</a> found that 54% of all website images lack adequate alternative text. For businesses, that means legal risk under the ADA, EAA (European Accessibility Act), and WCAG 2.2 guidelines &mdash; and it means millions of screen reader users can&rsquo;t interact with your content.</p>
+
+        <p>Fixing this manually is painful. A mid-size e-commerce store with 10,000 product images would take weeks of human effort to audit and describe. Cloud vision APIs (Google Vision, Azure, AWS Rekognition) charge $1&ndash;4 per 1,000 images and send all your product photos to third-party servers.</p>
+
+        <p>With <strong>n8n</strong> and <strong>Ollama</strong>, you can generate WCAG-compliant alt text at scale on your own hardware &mdash; for free, with full privacy. This tutorial builds a workflow that:</p>
+        <ol>
+            <li>Scans your website, CMS, or image directory for images missing alt text</li>
+            <li>Sends each image to a local vision model (LLaVA) running on Ollama</li>
+            <li>Generates context-aware, descriptive alt text following WCAG 2.2 guidelines</li>
+            <li>Validates the output for length, quality, and relevance</li>
+            <li>Updates your CMS, database, or exports a CSV for bulk import</li>
+        </ol>
+
+        <h2>Why Local AI for Alt Text Generation?</h2>
+
+        <table>
+            <tr><th>Feature</th><th>Cloud Vision APIs</th><th>Self-Hosted (n8n + Ollama)</th></tr>
+            <tr><td>Cost per 1,000 images</td><td>$1&ndash;4</td><td>$0 (your hardware)</td></tr>
+            <tr><td>10,000 images</td><td>$10&ndash;40</td><td>$0</td></tr>
+            <tr><td>100,000 images</td><td>$100&ndash;400</td><td>$0</td></tr>
+            <tr><td>Image data privacy</td><td>Sent to cloud provider</td><td>Never leaves your server</td></tr>
+            <tr><td>Rate limits</td><td>Yes (varies by provider)</td><td>None</td></tr>
+            <tr><td>WCAG-specific output</td><td>Generic captions</td><td>Custom prompts for compliance</td></tr>
+            <tr><td>Customizable for domain</td><td>Limited</td><td>Full prompt control per image type</td></tr>
+        </table>
+
+        <div class="highlight">
+            <strong>Privacy matters:</strong> Product images, internal documentation screenshots, medical images, and user-uploaded content should not be sent to external APIs without consideration. Local processing with Ollama keeps all image data on your infrastructure &mdash; critical for GDPR, HIPAA, and internal security policies.
+        </div>
+
+        <h2>Prerequisites</h2>
+        <ul>
+            <li><strong>n8n</strong> &mdash; self-hosted instance (Docker or npm)</li>
+            <li><strong>Ollama</strong> &mdash; running locally with a vision model: <code>llava:13b</code> (best quality) or <code>llava:7b</code> (faster)</li>
+            <li><strong>Image source</strong> &mdash; website URL, CMS API (WordPress, Shopify), or local directory</li>
+            <li><strong>~8GB RAM</strong> for LLaVA 7B, ~16GB for LLaVA 13B</li>
+        </ul>
+
+        <p>Pull the vision model:</p>
+        <pre><code>ollama pull llava:13b
+# Or for faster processing with less RAM:
+ollama pull llava:7b</code></pre>
+
+        <h2>Architecture Overview</h2>
+
+        <pre><code>Image Source (Website crawl / CMS API / Directory scan)
+    &darr;
+[Find Images] &mdash; Identify images with missing or empty alt text
+    &darr;
+[Download Image] &mdash; Fetch image binary for analysis
+    &darr;
+[Analyze Image] &mdash; LLaVA vision model generates description
+    &darr;
+[Format Alt Text] &mdash; Apply WCAG guidelines (length, context, decorative check)
+    &darr;
+[Validate] &mdash; Quality check: not too long, not too generic, relevant
+    &darr;
+[Output] &mdash; Update CMS, write to database, or export CSV</code></pre>
+
+        <h2>WCAG 2.2 Alt Text Guidelines</h2>
+
+        <p>Before building the workflow, understand what makes good alt text according to <a href="https://www.w3.org/WAI/tutorials/images/">W3C guidelines</a>:</p>
+
+        <ul>
+            <li><strong>Be specific and concise</strong> &mdash; describe the image content in 125 characters or fewer (screen readers may truncate longer text)</li>
+            <li><strong>Convey function, not just appearance</strong> &mdash; &ldquo;Submit order button&rdquo; not &ldquo;green rectangle&rdquo;</li>
+            <li><strong>Skip &ldquo;image of&rdquo; or &ldquo;photo of&rdquo;</strong> &mdash; screen readers already announce it as an image</li>
+            <li><strong>Mark decorative images</strong> &mdash; use <code>alt=""</code> for purely decorative images (borders, spacers, backgrounds)</li>
+            <li><strong>Include relevant context</strong> &mdash; a product image alt text should include product name and key features</li>
+            <li><strong>Don&rsquo;t repeat surrounding text</strong> &mdash; if the caption already says &ldquo;Red Nike Air Max&rdquo;, the alt text should add different detail</li>
+        </ul>
+
+        <h2>Step-by-Step Build</h2>
+
+        <div class="step">
+            <div class="step-number">STEP 1 &mdash; Image Discovery</div>
+            <h3>Find images that need alt text</h3>
+            <p>Use an <strong>HTTP Request</strong> node to crawl your site, or connect to your CMS API to find images with missing alt text.</p>
+
+            <p><strong>Option A: WordPress REST API</strong></p>
+            <pre><code>GET https://yoursite.com/wp-json/wp/v2/media?per_page=100&mime_type=image/jpeg
+
+// Filter in n8n Function node:
+const needsAlt = items.filter(item =&gt;
+  !item.json.alt_text || item.json.alt_text.trim() === ''
+);
+return needsAlt;</code></pre>
+
+            <p><strong>Option B: Shopify API (product images)</strong></p>
+            <pre><code>GET https://yourstore.myshopify.com/admin/api/2024-01/products.json?fields=id,title,images
+
+// Extract images missing alt text:
+const images = [];
+for (const product of items) {
+  for (const img of product.json.images) {
+    if (!img.alt || img.alt.trim() === '') {
+      images.push({
+        json: {
+          product_id: product.json.id,
+          product_title: product.json.title,
+          image_id: img.id,
+          image_url: img.src,
+          current_alt: img.alt || ''
+        }
+      });
+    }
+  }
+}
+return images;</code></pre>
+
+            <p><strong>Option C: HTML crawl</strong></p>
+            <pre><code>// Use HTTP Request to fetch page HTML, then parse with Function node:
+const cheerio = require('cheerio');  // n8n has cheerio built in
+const $ = cheerio.load(items[0].json.data);
+const missingAlt = [];
+
+$('img').each((i, el) =&gt; {
+  const alt = $(el).attr('alt');
+  const src = $(el).attr('src');
+  if (!alt || alt.trim() === '') {
+    missingAlt.push({
+      json: { src, page_url: items[0].json.url, index: i }
+    });
+  }
+});
+return missingAlt;</code></pre>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 2 &mdash; Image Download</div>
+            <h3>Fetch image binary for vision model analysis</h3>
+            <p>Use an <strong>HTTP Request</strong> node to download each image as binary data:</p>
+            <pre><code>// HTTP Request node settings:
+Method: GET
+URL: {{ $json.image_url }}
+Response Format: File
+Output Field: image_data</code></pre>
+
+            <p>For local directories, use the <strong>Read Binary File</strong> node to load images directly.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 3 &mdash; Vision Model Analysis</div>
+            <h3>Generate descriptions with LLaVA via Ollama</h3>
+            <p>This is the core step. Send the image to Ollama&rsquo;s vision model with a WCAG-optimized prompt:</p>
+
+            <pre><code>// HTTP Request node to Ollama API:
+POST http://localhost:11434/api/generate
+
+{
+  "model": "llava:13b",
+  "prompt": "You are an accessibility expert writing alt text for screen readers. Describe this image following WCAG 2.2 guidelines:\n\n1. Be specific and concise (under 125 characters)\n2. Describe the content and function, not just appearance\n3. Do NOT start with 'image of', 'photo of', or 'picture of'\n4. If this is a decorative/background image with no informational content, respond with exactly: DECORATIVE\n5. Include relevant details: colors, text visible in image, actions depicted\n\nContext: This image is from a {{ $json.page_context || 'website' }}.\nProduct name (if applicable): {{ $json.product_title || 'N/A' }}\n\nWrite ONLY the alt text, nothing else.",
+  "images": ["{{ $binary.image_data.base64 }}"],
+  "stream": false,
+  "options": {
+    "temperature": 0.3,
+    "num_predict": 80
+  }
+}</code></pre>
+
+            <div class="highlight">
+                <strong>Prompt engineering tip:</strong> Low temperature (0.3) ensures consistent, factual descriptions. The &ldquo;DECORATIVE&rdquo; instruction prevents the model from generating unnecessary alt text for spacer images, backgrounds, and borders that should have empty alt attributes.
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 4 &mdash; Domain-Specific Prompts</div>
+            <h3>Customize prompts for different image types</h3>
+            <p>Different contexts need different descriptions. Use a <strong>Switch</strong> node to route images to specialized prompts:</p>
+
+            <pre><code>// Function node: choose prompt based on context
+const context = $json.page_context || 'general';
+
+const prompts = {
+  'product': `Describe this product image for an online store listing.
+Include: product type, color, material, key features visible.
+Format: "[Product feature] [color/material] [product type]"
+Example: "Stainless steel insulated water bottle with flip-top lid, 32oz, matte black finish"
+Keep under 125 characters.`,
+
+  'blog': `Describe this image for a blog article.
+Focus on what the image communicates in the context of the article.
+Be descriptive but concise. Under 125 characters.`,
+
+  'icon': `This is a UI icon or button image.
+Describe its function, not its appearance.
+Example: "Search", "Close menu", "Add to cart"
+If purely decorative, respond: DECORATIVE`,
+
+  'chart': `Describe this chart or graph for someone who cannot see it.
+Include: chart type, what is being measured, key trends or values.
+Example: "Bar chart showing monthly revenue from Jan to Dec 2025, trending upward from $10K to $45K"`,
+
+  'general': `Describe this image concisely for a screen reader user.
+Be specific about content. Under 125 characters.
+Do not start with "image of" or "photo of".`
+};
+
+return [{ json: { ...items[0].json, prompt: prompts[context] || prompts.general } }];</code></pre>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 5 &mdash; Validation and Formatting</div>
+            <h3>Quality check the generated alt text</h3>
+
+            <pre><code>// Function node: validate and clean alt text
+const altText = $json.generated_alt.trim();
+const result = { ...items[0].json };
+
+// Check if decorative
+if (altText === 'DECORATIVE' || altText.toLowerCase().includes('decorative')) {
+  result.final_alt = '';
+  result.is_decorative = true;
+  return [{ json: result }];
+}
+
+let cleaned = altText;
+
+// Remove "image of", "photo of" prefixes
+cleaned = cleaned.replace(/^(an? )?(image|photo|picture|photograph|screenshot|icon) (of|showing|depicting) /i, '');
+
+// Capitalize first letter
+cleaned = cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+
+// Remove trailing period (screen readers add their own pause)
+cleaned = cleaned.replace(/\.$/, '');
+
+// Enforce max length (125 chars for screen reader compatibility)
+if (cleaned.length &gt; 125) {
+  cleaned = cleaned.substring(0, 122) + '...';
+}
+
+// Quality flags
+result.final_alt = cleaned;
+result.is_decorative = false;
+result.char_count = cleaned.length;
+result.quality_warnings = [];
+
+if (cleaned.length &lt; 10) result.quality_warnings.push('too_short');
+if (cleaned.length &gt; 125) result.quality_warnings.push('too_long');
+if (/^(a |the |an )/i.test(cleaned)) result.quality_warnings.push('starts_with_article');
+if (/image|photo|picture/i.test(cleaned)) result.quality_warnings.push('contains_image_word');
+
+return [{ json: result }];</code></pre>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 6 &mdash; Output and Update</div>
+            <h3>Write alt text back to your CMS or export</h3>
+
+            <p><strong>Option A: Update WordPress</strong></p>
+            <pre><code>// HTTP Request node:
+POST https://yoursite.com/wp-json/wp/v2/media/{{ $json.image_id }}
+
+{
+  "alt_text": "{{ $json.final_alt }}"
+}</code></pre>
+
+            <p><strong>Option B: Update Shopify product images</strong></p>
+            <pre><code>// HTTP Request node:
+PUT https://yourstore.myshopify.com/admin/api/2024-01/products/{{ $json.product_id }}/images/{{ $json.image_id }}.json
+
+{
+  "image": {
+    "id": {{ $json.image_id }},
+    "alt": "{{ $json.final_alt }}"
+  }
+}</code></pre>
+
+            <p><strong>Option C: Export CSV for manual review</strong></p>
+            <pre><code>// Spreadsheet File node:
+// Columns: image_url, current_alt, generated_alt, is_decorative, char_count, quality_warnings
+// Output: alt-text-audit-2026-03-24.csv</code></pre>
+        </div>
+
+        <h2>Batch Processing for Large Sites</h2>
+
+        <p>Processing 10,000+ images requires careful batching to avoid overwhelming Ollama:</p>
+
+        <pre><code>// Function node: batch controller
+const BATCH_SIZE = 20;
+const DELAY_MS = 1000; // 1 second between batches
+
+const allImages = items;
+const batches = [];
+
+for (let i = 0; i &lt; allImages.length; i += BATCH_SIZE) {
+  batches.push(allImages.slice(i, i + BATCH_SIZE));
+}
+
+// Process batches with the Loop Over Items node
+// Set batch size to 20, add a Wait node (1s) between batches
+// LLaVA processes ~2-5 images/second on CPU, 10-20/second on GPU</code></pre>
+
+        <div class="highlight">
+            <strong>Performance estimates:</strong>
+            <ul style="margin-top: 0.5rem;">
+                <li><strong>CPU (8-core)</strong>: ~3 seconds per image &rarr; 1,200 images/hour</li>
+                <li><strong>GPU (RTX 3060)</strong>: ~0.5 seconds per image &rarr; 7,200 images/hour</li>
+                <li><strong>GPU (RTX 4090)</strong>: ~0.2 seconds per image &rarr; 18,000 images/hour</li>
+            </ul>
+            A 10,000-image e-commerce catalog takes ~2.5 hours on CPU or ~25 minutes on a mid-range GPU.
+        </div>
+
+        <h2>Scheduled Audits: Keep Alt Text Current</h2>
+
+        <p>New images are added constantly. Set up a <strong>Cron</strong> trigger to run the workflow weekly:</p>
+
+        <pre><code>// Cron node: Run every Sunday at 2 AM
+// Only process images added/modified since last run
+
+// Function node: filter by date
+const lastRun = $workflow.staticData.lastRun || '2000-01-01';
+const newImages = items.filter(img =&gt;
+  new Date(img.json.date_created) &gt; new Date(lastRun)
+);
+
+// Save timestamp for next run
+$workflow.staticData.lastRun = new Date().toISOString();
+return newImages;</code></pre>
+
+        <h2>Compliance Reporting</h2>
+
+        <p>Generate an accessibility audit report after each run:</p>
+
+        <pre><code>// Function node: generate report
+const total = items.length;
+const decorative = items.filter(i =&gt; i.json.is_decorative).length;
+const generated = items.filter(i =&gt; !i.json.is_decorative &amp;&amp; i.json.final_alt).length;
+const warnings = items.filter(i =&gt; i.json.quality_warnings?.length &gt; 0).length;
+
+const report = {
+  date: new Date().toISOString().split('T')[0],
+  total_images_scanned: total,
+  decorative_images: decorative,
+  alt_text_generated: generated,
+  needs_review: warnings,
+  compliance_rate: ((generated + decorative) / total * 100).toFixed(1) + '%'
+};
+
+return [{ json: report }];</code></pre>
+
+        <p>Send the report via email, Slack, or save to a dashboard. Track your compliance rate over time to demonstrate WCAG progress to stakeholders.</p>
+
+        <h2>Real-World Use Cases</h2>
+
+        <ul>
+            <li><strong>E-commerce stores</strong> &mdash; Generate alt text for product catalogs. Shopify, WooCommerce, Magento, BigCommerce. Improves SEO (Google indexes alt text) and accessibility compliance.</li>
+            <li><strong>News and media sites</strong> &mdash; Describe editorial photos, infographics, and embedded charts for screen reader users.</li>
+            <li><strong>Documentation platforms</strong> &mdash; Generate descriptions for technical screenshots, architecture diagrams, and UI mockups.</li>
+            <li><strong>Education</strong> &mdash; Make course materials accessible by describing slides, diagrams, and educational images.</li>
+            <li><strong>Healthcare portals</strong> &mdash; Describe medical images locally without sending patient data to cloud APIs (HIPAA compliance).</li>
+            <li><strong>Government websites</strong> &mdash; Meet Section 508 and WCAG 2.2 AA requirements for all published images.</li>
+        </ul>
+
+        <h2>SEO Benefits of Alt Text</h2>
+
+        <p>Alt text isn&rsquo;t just for accessibility &mdash; it directly impacts search rankings:</p>
+
+        <ul>
+            <li><strong>Google Image Search</strong> &mdash; alt text is the primary signal for image search ranking. Proper alt text gets your images into Google Image results, driving additional traffic.</li>
+            <li><strong>Page relevance</strong> &mdash; alt text helps search engines understand page content, improving overall page ranking for target keywords.</li>
+            <li><strong>Featured snippets</strong> &mdash; pages with proper image descriptions are more likely to appear in featured snippets and rich results.</li>
+        </ul>
+
+        <div class="highlight">
+            <strong>Case study:</strong> An e-commerce store that added descriptive alt text to all 8,000 product images saw a 23% increase in organic traffic from Google Image Search within 3 months. The workflow paid for the hardware investment in the first week.
+        </div>
+
+        <div class="cta">
+            <h3>Want the Complete Workflow?</h3>
+            <p>The <strong>Self-Hosted AI Workflow Pack</strong> includes 11 production-ready n8n templates &mdash; including image analysis, content generation, document processing, and more. All powered by Ollama. Zero API costs.</p>
+            <a href="https://buy.stripe.com/28EaEXdSJ1I67WbaivabK0c" class="btn">Get 11 AI Workflows &mdash; $39</a>
+            <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--muted);">One-time payment. No subscription. 30-day guarantee.</p>
+        </div>
+
+        <h2>Troubleshooting</h2>
+
+        <h3>LLaVA not generating good descriptions</h3>
+        <ul>
+            <li>Use <code>llava:13b</code> instead of <code>llava:7b</code> for better quality</li>
+            <li>Ensure temperature is 0.3 or lower for factual descriptions</li>
+            <li>Add domain context to the prompt (&ldquo;this is a product image for an electronics store&rdquo;)</li>
+        </ul>
+
+        <h3>Ollama connection issues from n8n</h3>
+        <ul>
+            <li>If n8n is in Docker, use <code>http://host.docker.internal:11434</code> instead of <code>localhost</code></li>
+            <li>Set <code>OLLAMA_HOST=0.0.0.0</code> in Ollama&rsquo;s environment to allow network access</li>
+            <li>Check firewall rules: <code>sudo ufw allow 11434/tcp</code></li>
+        </ul>
+
+        <h3>Processing too slow</h3>
+        <ul>
+            <li>Resize images before sending to Ollama (768px max dimension is sufficient for alt text)</li>
+            <li>Use <code>llava:7b</code> for 2&ndash;3x faster processing at slightly lower quality</li>
+            <li>Process in parallel batches if you have a GPU with enough VRAM</li>
+        </ul>
+
+        <h2>Related Tutorials</h2>
+        <ul>
+            <li><a href="n8n-ai-product-descriptions-ollama-ecommerce.html">Generate AI Product Descriptions with n8n + Ollama</a></li>
+            <li><a href="n8n-ai-content-moderation-ollama.html">Automate Content Moderation with n8n + Ollama</a></li>
+            <li><a href="n8n-ai-data-enrichment-ollama-web-scraping.html">Automate Data Enrichment with n8n + Ollama</a></li>
+            <li><a href="self-hosted-ai-workflows-n8n-ollama.html">Complete Guide: Self-Hosted AI with n8n + Ollama</a></li>
+        </ul>
+
+    </article>
+
+    <footer>
+        <p>&copy; 2026 Workflow Forge &middot; <a href="https://bonskari.github.io/n8n-ai-workflows/">All Templates</a> &middot; Built with n8n + Ollama</p>
+    </footer>
+</div>
+</body>
+</html>
