@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Automate Social Media Content with n8n + Ollama (Free Workflow)</title>
+    <meta name="description" content="Generate optimized social media posts for Twitter, LinkedIn, Reddit, and Instagram using n8n and Ollama. Free workflow template included. No API costs, runs 100% locally.">
+    <meta property="og:title" content="Automate Social Media Content with n8n + Ollama — Free Workflow">
+    <meta property="og:description" content="One topic → 4 platform-optimized posts. Free n8n workflow using local AI via Ollama. No API keys needed.">
+    <meta property="og:type" content="article">
+    <link rel="canonical" href="https://bonskari.github.io/n8n-ai-workflows/blog/n8n-social-media-content-generator-ollama.html">
+    <style>
+        :root { --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff; --green: #3fb950; --orange: #d29922; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+        .container { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem; }
+        nav { padding: 1rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+        nav a { color: var(--accent); text-decoration: none; }
+        h1 { font-size: 2.2rem; margin-bottom: 1rem; line-height: 1.3; }
+        h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; color: var(--accent); }
+        h3 { font-size: 1.2rem; margin: 1.5rem 0 0.75rem; }
+        p { margin-bottom: 1rem; }
+        .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+        pre { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin: 1rem 0 1.5rem; overflow-x: auto; font-size: 0.88rem; line-height: 1.5; }
+        code { font-family: 'SF Mono', 'Fira Code', monospace; }
+        .inline-code { background: var(--surface); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+        ul, ol { margin: 0 0 1rem 1.5rem; }
+        li { margin-bottom: 0.5rem; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .cta { background: linear-gradient(135deg, #1a3a5c, #1a2d4a); border: 1px solid var(--accent); border-radius: 12px; padding: 2rem; margin: 2rem 0; text-align: center; }
+        .cta h3 { color: var(--accent); margin-top: 0; }
+        .cta a.btn { display: inline-block; background: var(--accent); color: #000; padding: 0.75rem 2rem; border-radius: 8px; font-weight: bold; text-decoration: none; margin-top: 1rem; }
+        .cta a.btn:hover { opacity: 0.9; text-decoration: none; }
+        .highlight { background: var(--surface); border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; }
+        th, td { border: 1px solid var(--border); padding: 0.75rem; text-align: left; }
+        th { background: var(--surface); }
+        .step { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+        .step-number { color: var(--accent); font-size: 0.9rem; font-weight: bold; margin-bottom: 0.5rem; }
+        footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav><a href="https://bonskari.github.io/n8n-ai-workflows/">← n8n AI Workflow Templates</a></nav>
+
+    <article>
+        <h1>How to Automate Social Media Content with n8n + Ollama (Free Workflow Included)</h1>
+        <p class="meta">Published March 24, 2026 · 8 min read · <a href="https://github.com/bonskari/n8n-ollama-social-content">Get the free workflow →</a></p>
+
+        <p>Creating social media content for multiple platforms is time-consuming. Each platform has its own tone, character limits, and audience expectations. What works on LinkedIn doesn't work on Twitter, and neither works on Reddit.</p>
+
+        <p>In this tutorial, you'll build an <strong>n8n workflow that takes a single topic and generates optimized content for 4 platforms</strong> — Twitter/X, LinkedIn, Reddit, and Instagram — using Ollama for local AI processing. No API keys, no monthly costs, no data leaving your machine.</p>
+
+        <div class="highlight">
+            <strong>What you'll build:</strong> A one-click workflow that generates platform-specific social media posts with AI quality review. Total setup time: ~10 minutes.
+        </div>
+
+        <h2>Why Local AI for Content Generation?</h2>
+
+        <p>Using ChatGPT or Claude APIs for social media content works, but has drawbacks:</p>
+
+        <table>
+            <tr><th>Factor</th><th>Cloud AI APIs</th><th>Ollama (Local)</th></tr>
+            <tr><td>Cost per post</td><td>$0.01–0.05</td><td>$0 (free forever)</td></tr>
+            <tr><td>Monthly cost (daily use)</td><td>$10–50+</td><td>$0</td></tr>
+            <tr><td>Data privacy</td><td>Sent to cloud</td><td>Stays on your machine</td></tr>
+            <tr><td>Rate limits</td><td>Yes</td><td>No</td></tr>
+            <tr><td>Works offline</td><td>No</td><td>Yes</td></tr>
+            <tr><td>Setup complexity</td><td>API key + billing</td><td>One install command</td></tr>
+        </table>
+
+        <p>For content generation, local AI models like <span class="inline-code">llama3.2</span> or <span class="inline-code">mistral</span> produce quality that's comparable to cloud APIs — especially for short-form social media content.</p>
+
+        <h2>Prerequisites</h2>
+
+        <ul>
+            <li><strong>n8n</strong> — Self-hosted (<span class="inline-code">docker run -it --rm -p 5678:5678 n8nio/n8n</span>) or <a href="https://n8n.io">n8n.io cloud</a></li>
+            <li><strong>Ollama</strong> — Install from <a href="https://ollama.ai">ollama.ai</a>, then <span class="inline-code">ollama pull llama3.2</span></li>
+        </ul>
+
+        <p>That's it. No API keys, no accounts, no billing setup.</p>
+
+        <h2>How the Workflow Works</h2>
+
+        <pre><code>You enter a topic (e.g., "benefits of self-hosted AI")
+    │
+    ▼
+n8n sends topic to Ollama with platform-specific prompts
+    │
+    ├── Twitter/X: Concise, punchy, hashtags, 280 chars
+    ├── LinkedIn: Professional, insights, 1200 chars
+    ├── Reddit: Conversational, detailed, community-friendly
+    └── Instagram: Visual-focused, emoji-rich, 30 hashtags
+    │
+    ▼
+AI Quality Review pass (checks tone, engagement, accuracy)
+    │
+    ▼
+4 ready-to-post pieces of content</code></pre>
+
+        <p>The workflow uses <strong>two AI passes</strong>: one for generation, one for quality review. The review pass catches issues like:</p>
+        <ul>
+            <li>Content that's too generic or salesy</li>
+            <li>Platform tone mismatches (e.g., LinkedIn post that reads like a tweet)</li>
+            <li>Missing or excessive hashtags</li>
+            <li>Grammar and clarity issues</li>
+        </ul>
+
+        <h2>Step-by-Step Setup</h2>
+
+        <div class="step">
+            <div class="step-number">STEP 1: Download the Workflow</div>
+            <p>Download the JSON workflow file from GitHub:</p>
+            <pre><code># Direct download
+curl -O https://github.com/bonskari/n8n-ollama-social-content/raw/main/workflow.json
+
+# Or clone the repo
+git clone https://github.com/bonskari/n8n-ollama-social-content.git</code></pre>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 2: Import into n8n</div>
+            <ol>
+                <li>Open n8n (usually at <span class="inline-code">http://localhost:5678</span>)</li>
+                <li>Click <strong>Add workflow</strong> → <strong>Import from file</strong></li>
+                <li>Select the downloaded <span class="inline-code">workflow.json</span></li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 3: Configure Ollama Connection</div>
+            <p>In the workflow, each HTTP Request node points to Ollama's API. By default, it's configured for:</p>
+            <pre><code>URL: http://localhost:11434/api/generate
+Model: llama3.2</code></pre>
+            <p>If your Ollama is on a different host or you want a different model, update the URL and model name in the "Set Parameters" node at the top of the workflow.</p>
+        </div>
+
+        <div class="step">
+            <div class="step-number">STEP 4: Run It</div>
+            <p>Click <strong>Execute Workflow</strong>. Enter your topic in the manual trigger dialog. In about 30–60 seconds, you'll have 4 platform-optimized posts ready to copy and paste.</p>
+        </div>
+
+        <h2>Example Output</h2>
+
+        <p>Input topic: <em>"Why developers should try self-hosted AI tools"</em></p>
+
+        <h3>Twitter/X Output</h3>
+        <pre><code>🔓 Stop paying for AI APIs when you can run the same models locally.
+
+Self-hosted AI tools give you:
+✅ Zero API costs
+✅ Full data privacy
+✅ No rate limits
+✅ Works offline
+
+Try Ollama + n8n — free, open-source, and yours to keep.
+
+#SelfHosted #AI #OpenSource #n8n #Ollama</code></pre>
+
+        <h3>LinkedIn Output</h3>
+        <pre><code>I've been experimenting with running AI models locally instead of using
+cloud APIs, and the results have surprised me.
+
+Here's what changed:
+
+→ Monthly AI costs dropped from $47 to $0
+→ Sensitive data never leaves my network
+→ No more rate limit errors at 2am
+→ Everything works even without internet
+
+The tools that made this possible: Ollama for running models locally,
+and n8n for building automation workflows around them.
+
+If you're building AI-powered automation and cost or privacy matters
+to you, self-hosted is worth exploring.
+
+What's your experience with local AI models?</code></pre>
+
+        <h2>Customization Tips</h2>
+
+        <ul>
+            <li><strong>Change the model:</strong> Swap <span class="inline-code">llama3.2</span> for <span class="inline-code">mistral</span>, <span class="inline-code">gemma2</span>, or any model Ollama supports</li>
+            <li><strong>Add brand voice:</strong> Edit the system prompts to include your brand guidelines, tone, and key messaging</li>
+            <li><strong>Add more platforms:</strong> Duplicate a generation node and customize the prompt for YouTube Shorts, TikTok, newsletters, etc.</li>
+            <li><strong>Schedule it:</strong> Replace the manual trigger with a Cron node to generate content on a schedule</li>
+            <li><strong>Connect to posting tools:</strong> Add nodes to auto-post via Buffer, Hootsuite, or platform APIs</li>
+        </ul>
+
+        <h2>Recommended Ollama Models for Content</h2>
+
+        <table>
+            <tr><th>Model</th><th>Size</th><th>Best For</th><th>Speed</th></tr>
+            <tr><td>llama3.2</td><td>3B</td><td>Fast, good quality general content</td><td>Fast</td></tr>
+            <tr><td>llama3.1:8b</td><td>8B</td><td>Higher quality, still fast enough</td><td>Medium</td></tr>
+            <tr><td>mistral</td><td>7B</td><td>Strong writing quality, European language support</td><td>Medium</td></tr>
+            <tr><td>gemma2:9b</td><td>9B</td><td>Google's model, good for factual content</td><td>Medium</td></tr>
+        </table>
+
+        <p>For social media content, the 3B–8B range gives the best speed-to-quality ratio. Larger models are better for long-form blog posts.</p>
+
+        <div class="cta">
+            <h3>Want All 11 AI Workflows?</h3>
+            <p>This social media generator is one of 11 production-ready workflows in the full pack. Also includes: blog writer, email auto-responder, lead scoring, document summarizer, meeting notes, competitor monitor, and more.</p>
+            <a href="https://bonskari.github.io/n8n-ai-workflows/" class="btn">Get the Full Pack — $39</a>
+            <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--muted);">One-time purchase. 30-day money-back guarantee. Instant delivery.</p>
+        </div>
+
+        <h2>More Free Workflows</h2>
+
+        <p>Try these other free n8n + Ollama workflows:</p>
+        <ul>
+            <li><a href="https://github.com/bonskari/n8n-ollama-blog-writer">AI Blog Writer Pipeline</a> — Research, outline, draft, and edit blog posts with local AI</li>
+            <li><a href="https://github.com/bonskari/n8n-ollama-email-responder">AI Email Auto-Responder</a> — Classify emails, filter spam, draft replies automatically</li>
+            <li><a href="https://github.com/bonskari/n8n-ai-workflows">All Free Samples</a> — 3 free workflows + documentation</li>
+        </ul>
+
+        <h2>Troubleshooting</h2>
+
+        <h3>Ollama connection refused</h3>
+        <p>Make sure Ollama is running (<span class="inline-code">ollama serve</span>) and accessible at <span class="inline-code">http://localhost:11434</span>. If n8n runs in Docker, use <span class="inline-code">http://host.docker.internal:11434</span> instead of localhost.</p>
+
+        <h3>Slow generation</h3>
+        <p>Try a smaller model (<span class="inline-code">llama3.2</span> instead of <span class="inline-code">llama3.1:8b</span>). If you have a GPU, make sure Ollama is using it — check with <span class="inline-code">ollama ps</span>.</p>
+
+        <h3>Output quality issues</h3>
+        <p>Upgrade to a larger model, or edit the system prompts in the workflow to be more specific about your desired output format and tone.</p>
+
+    </article>
+
+    <footer>
+        <p>Part of the <a href="https://bonskari.github.io/n8n-ai-workflows/">n8n AI Workflow Templates</a> project. All workflows are open-source and free to use.</p>
+        <p style="margin-top: 0.5rem;">© 2026 Unstable Entity Oy</p>
+    </footer>
+</div>
+</body>
+</html>
