@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>n8n + Ollama AI Workflow Tutorials</title>
+    <link>https://bonskari.github.io/n8n-ai-workflows/</link>
+    <description>Free tutorials for building self-hosted AI automation workflows with n8n and Ollama. No API keys, no cloud costs, full privacy.</description>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 25 Mar 2026 10:00:00 +0000</lastBuildDate>
+    <atom:link href="https://bonskari.github.io/n8n-ai-workflows/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Automate AI Translation with n8n + Ollama (Self-Hosted Content Localization Workflow)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-translation-ollama-localization.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-translation-ollama-localization.html</guid>
+      <pubDate>Mon, 24 Mar 2026 23:00:00 +0000</pubDate>
+      <description>Build an automated translation workflow with n8n and Ollama. Translate websites, product listings, emails, and documents into 50+ languages using self-hosted AI. No API costs. Free workflow template included.</description>
+    </item>
+    <item>
+      <title>Automate Image Alt Text with n8n + Ollama (AI Accessibility Workflow)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-image-alt-text-ollama-accessibility.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-image-alt-text-ollama-accessibility.html</guid>
+      <pubDate>Mon, 24 Mar 2026 22:00:00 +0000</pubDate>
+      <description>Generate WCAG-compliant alt text for images at scale using n8n and Ollama. Automate accessibility compliance with local AI. No API costs. Free workflow template.</description>
+    </item>
+    <item>
+      <title>Generate AI Product Descriptions with n8n + Ollama (E-Commerce Automation)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-product-descriptions-ollama-ecommerce.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-product-descriptions-ollama-ecommerce.html</guid>
+      <pubDate>Mon, 24 Mar 2026 21:00:00 +0000</pubDate>
+      <description>Automate SEO product descriptions for your e-commerce store with n8n and Ollama. Generate unique, keyword-rich listings at scale using local AI. No API costs. Free workflow template.</description>
+    </item>
+    <item>
+      <title>Automate Content Moderation with n8n + Ollama (AI Comment Filter)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-content-moderation-ollama.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-content-moderation-ollama.html</guid>
+      <pubDate>Mon, 24 Mar 2026 20:00:00 +0000</pubDate>
+      <description>Build an automated content moderation pipeline with n8n and Ollama. Filter toxic comments, spam, and inappropriate content using local AI. No API costs, full privacy. Free workflow template.</description>
+    </item>
+    <item>
+      <title>Automate Data Enrichment with n8n + Ollama (AI-Powered Web Scraping Pipeline)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-data-enrichment-ollama-web-scraping.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-data-enrichment-ollama-web-scraping.html</guid>
+      <pubDate>Mon, 24 Mar 2026 19:30:00 +0000</pubDate>
+      <description>Build an AI-powered data enrichment pipeline with n8n and Ollama. Scrape websites, extract structured company and contact data with local AI, and push enriched leads to Google Sheets or Airtable.</description>
+    </item>
+    <item>
+      <title>How to Extract Invoice Data with n8n + Ollama (Free AI Document Processing Workflow)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-invoice-data-extraction-ollama.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-invoice-data-extraction-ollama.html</guid>
+      <pubDate>Mon, 24 Mar 2026 19:00:00 +0000</pubDate>
+      <description>Extract invoice data automatically with n8n and Ollama. Pull vendor name, invoice number, line items, totals, and tax using local AI. Free workflow template. GDPR-compliant, no cloud API costs.</description>
+    </item>
+    <item>
+      <title>How to Automate Customer Support with n8n + Ollama (Free AI Ticket Router)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-customer-support-automation-ollama.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-customer-support-automation-ollama.html</guid>
+      <pubDate>Mon, 24 Mar 2026 18:30:00 +0000</pubDate>
+      <description>Automate customer support ticket routing with n8n and Ollama. Classify and route tickets into billing, technical, feature request, and spam using local AI. No API costs, full data privacy.</description>
+    </item>
+    <item>
+      <title>Automate Code Reviews with n8n + Ollama (AI Pull Request Reviewer)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-code-review-ollama.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-code-review-ollama.html</guid>
+      <pubDate>Mon, 24 Mar 2026 18:00:00 +0000</pubDate>
+      <description>Build an automated AI code review pipeline with n8n and Ollama. Review pull requests locally with zero API costs. Free workflow template included. GDPR compliant.</description>
+    </item>
+    <item>
+      <title>Automate Resume Screening with n8n + Ollama (AI Recruitment Pipeline)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-resume-screening-ollama.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-resume-screening-ollama.html</guid>
+      <pubDate>Mon, 24 Mar 2026 17:30:00 +0000</pubDate>
+      <description>Build an AI-powered resume screening pipeline with n8n and Ollama. Score candidates, extract skills, rank applicants. Free workflow template. No API costs, GDPR compliant.</description>
+    </item>
+    <item>
+      <title>How to Extract Data from PDFs with n8n + Ollama (Free Workflow)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-pdf-document-processing-ollama.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-pdf-document-processing-ollama.html</guid>
+      <pubDate>Mon, 24 Mar 2026 17:00:00 +0000</pubDate>
+      <description>Automate PDF data extraction with n8n and Ollama. Parse invoices, contracts, and reports using local AI. Free workflow template included. No API costs, full privacy.</description>
+    </item>
+    <item>
+      <title>Automate Sentiment Analysis with n8n + Ollama (Brand Monitoring Pipeline)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-sentiment-analysis-ollama-brand-monitoring.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-sentiment-analysis-ollama-brand-monitoring.html</guid>
+      <pubDate>Mon, 24 Mar 2026 16:00:00 +0000</pubDate>
+      <description>Build an automated sentiment analysis pipeline with n8n and Ollama. Monitor brand mentions, classify feedback, and route alerts. Free workflow template. No API costs.</description>
+    </item>
+    <item>
+      <title>Build a Self-Hosted AI Chatbot with n8n + Ollama (No API Keys)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-chatbot-ollama-self-hosted.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-chatbot-ollama-self-hosted.html</guid>
+      <pubDate>Mon, 24 Mar 2026 15:00:00 +0000</pubDate>
+      <description>Build a private AI chatbot with n8n and Ollama. Supports Slack, Telegram, and web chat. Runs 100% locally with zero API costs. Free workflow template included.</description>
+    </item>
+    <item>
+      <title>How to Build a Private RAG Knowledge Base with n8n + Ollama (No Cloud APIs)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-rag-knowledge-base-ollama-private.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-rag-knowledge-base-ollama-private.html</guid>
+      <pubDate>Mon, 24 Mar 2026 14:00:00 +0000</pubDate>
+      <description>Build a fully private RAG knowledge base using n8n, Ollama, and Qdrant. Ingest documents, generate embeddings, and query with local AI. No cloud APIs, no data leaks.</description>
+    </item>
+    <item>
+      <title>Automate Email Triage with Local AI: n8n + Ollama Email Classification Workflow</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-email-triage-classification-ollama.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-email-triage-classification-ollama.html</guid>
+      <pubDate>Mon, 24 Mar 2026 13:00:00 +0000</pubDate>
+      <description>Build an AI-powered email triage system with n8n and Ollama. Automatically classify emails into support, sales, billing, spam, and urgent categories. Route to Slack channels and auto-draft replies.</description>
+    </item>
+    <item>
+      <title>Build an AI Meeting Notes Summarizer with n8n + Ollama (Free Workflow)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-meeting-notes-summarizer-ollama.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-meeting-notes-summarizer-ollama.html</guid>
+      <pubDate>Mon, 24 Mar 2026 12:00:00 +0000</pubDate>
+      <description>Automatically summarize meeting transcripts with n8n and Ollama. Extract action items, decisions, and follow-ups. Free workflow template. Runs locally, no API costs.</description>
+    </item>
+    <item>
+      <title>How to Build AI Lead Scoring with n8n + Ollama (Free Workflow)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-lead-scoring-ollama-workflow.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-lead-scoring-ollama-workflow.html</guid>
+      <pubDate>Mon, 24 Mar 2026 11:00:00 +0000</pubDate>
+      <description>Automate lead scoring with n8n and Ollama. Score leads 1-100 using local AI, enrich with company data, auto-route hot leads. Free workflow template included. No API costs.</description>
+    </item>
+    <item>
+      <title>How to Automate Email Responses with n8n and Ollama (Free, Self-Hosted)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/automate-email-responses-n8n-ollama.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/automate-email-responses-n8n-ollama.html</guid>
+      <pubDate>Mon, 24 Mar 2026 10:00:00 +0000</pubDate>
+      <description>Build a free, self-hosted email auto-responder using n8n and Ollama. Classify, prioritize, and draft replies automatically with local AI. Full tutorial with code examples.</description>
+    </item>
+    <item>
+      <title>How to Automate Social Media Content with n8n + Ollama (Free Workflow)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-social-media-content-generator-ollama.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-social-media-content-generator-ollama.html</guid>
+      <pubDate>Sun, 23 Mar 2026 20:00:00 +0000</pubDate>
+      <description>Generate optimized social media posts for Twitter, LinkedIn, Reddit, and Instagram using n8n and Ollama. Free workflow template included. No API costs, runs 100% locally.</description>
+    </item>
+    <item>
+      <title>n8n + Ollama Tutorial: Automate Everything with Local AI (No API Keys)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ollama-tutorial-local-ai-automation.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ollama-tutorial-local-ai-automation.html</guid>
+      <pubDate>Sun, 23 Mar 2026 15:00:00 +0000</pubDate>
+      <description>Step-by-step tutorial for connecting n8n to Ollama for local AI automation. Generate content, classify emails, score leads, and extract data without any API keys or monthly costs.</description>
+    </item>
+    <item>
+      <title>How to Build Self-Hosted AI Workflows with n8n and Ollama (2026 Guide)</title>
+      <link>https://bonskari.github.io/n8n-ai-workflows/blog/self-hosted-ai-workflows-n8n-ollama.html</link>
+      <guid>https://bonskari.github.io/n8n-ai-workflows/blog/self-hosted-ai-workflows-n8n-ollama.html</guid>
+      <pubDate>Sun, 23 Mar 2026 12:00:00 +0000</pubDate>
+      <description>Complete guide to building AI-powered automation workflows using n8n and Ollama. Run local AI models for content generation, email automation, lead scoring, and more. No API keys needed.</description>
+    </item>
+  </channel>
+</rss>
