@@ -55,12 +55,12 @@
         const downloadLink = document.getElementById('download-link');
 
         if (sessionId) {
-            fetch('https://api.usesnapapi.com/n8n/verify?session_id=' + encodeURIComponent(sessionId))
+            fetch('https://a6vp1lobzk.execute-api.us-east-1.amazonaws.com/n8n/verify?session_id=' + encodeURIComponent(sessionId))
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                     if (data.token) {
                         statusEl.innerHTML = '<p style="color: var(--green);">&#10003; Payment verified!</p>';
-                        downloadLink.href = 'https://api.usesnapapi.com/n8n/download?token=' + encodeURIComponent(data.token);
+                        downloadLink.href = 'https://a6vp1lobzk.execute-api.us-east-1.amazonaws.com/n8n/download?token=' + encodeURIComponent(data.token);
                         downloadSection.style.display = 'block';
                     } else {
                         statusEl.innerHTML = '<p class="error">Payment verification pending. Check your email for the download link, or refresh this page in a moment.</p>';
